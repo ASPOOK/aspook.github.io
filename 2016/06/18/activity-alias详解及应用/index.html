@@ -35,7 +35,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="AndroidManifest,activity-alias," />
 
 
 
@@ -51,15 +51,20 @@
 
 
 
-<meta name="description" content="请不要灰心，你也会有人妒忌">
-<meta property="og:type" content="website">
-<meta property="og:title" content="Serendipity">
-<meta property="og:url" content="http://geed.me/index.html">
+<meta name="description" content="activity-alias标签元素众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。
+activity-alias，顾名思义，即activity的别名。看到这里，大家会想那它究竟是哪个Activity的别名">
+<meta property="og:type" content="article">
+<meta property="og:title" content="activity-alias详解及应用">
+<meta property="og:url" content="http://geed.me/2016/06/18/activity-alias详解及应用/index.html">
 <meta property="og:site_name" content="Serendipity">
-<meta property="og:description" content="请不要灰心，你也会有人妒忌">
+<meta property="og:description" content="activity-alias标签元素众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。
+activity-alias，顾名思义，即activity的别名。看到这里，大家会想那它究竟是哪个Activity的别名">
+<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/activity-alias.gif">
+<meta property="og:updated_time" content="2016-06-18T13:57:13.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Serendipity">
-<meta name="twitter:description" content="请不要灰心，你也会有人妒忌">
+<meta name="twitter:title" content="activity-alias详解及应用">
+<meta name="twitter:description" content="activity-alias标签元素众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。
+activity-alias，顾名思义，即activity的别名。看到这里，大家会想那它究竟是哪个Activity的别名">
 
 
 
@@ -71,7 +76,7 @@
   };
 </script>
 
-  <title> Serendipity </title>
+  <title> activity-alias详解及应用 | Serendipity </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -92,9 +97,7 @@
 
 
 
-  <div class="container one-column 
-   page-home 
-">
+  <div class="container one-column page-post-detail">
     <div class="headband"></div>
 
     <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
@@ -191,15 +194,9 @@
       <div class="main-inner">
         <div id="content" class="content">
           
-  <section id="posts" class="posts-expand">
 
+  <div id="posts" class="posts-expand">
     
-
-    
-    
-
-    
-      
 
   
   
@@ -219,10 +216,7 @@
             
             
               
-                
-                <a class="post-title-link" href="/2016/06/18/activity-alias详解及应用/" itemprop="url">
-                  activity-alias详解及应用
-                </a>
+                activity-alias详解及应用
               
             
           </h1>
@@ -262,10 +256,7 @@
       
 
       
-        
-          <span itemprop="articleBody">
-            
-              <h3 id="activity-alias_u6807_u7B7E_u5143_u7D20"><a href="#activity-alias_u6807_u7B7E_u5143_u7D20" class="headerlink" title="activity-alias标签元素"></a>activity-alias标签元素</h3><p>众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。</p>
+        <span itemprop="articleBody"><h3 id="activity-alias_u6807_u7B7E_u5143_u7D20"><a href="#activity-alias_u6807_u7B7E_u5143_u7D20" class="headerlink" title="activity-alias标签元素"></a>activity-alias标签元素</h3><p>众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。</p>
 <p>activity-alias，顾名思义，即activity的别名。看到这里，大家会想那它究竟是哪个Activity的别名呢？我们在创建一个Activity时，必须在AndroidManifest中静态声明该Activity，同时配置android:name、android:label、android:icon等属性，还可配置intent-filter。对于activity-alias标签，它有一个属性叫android:targentActivity，这个属性就是用来为该标签设置目标Activity的，或者说它就是这个目标Activity的别名。至此我们已经明白activity-alias并非代表一个独立的Activity，而是为一个已经存在的Activity创建的别名。</p>
 <h3 id="activity-alias_u529F_u80FD"><a href="#activity-alias_u529F_u80FD" class="headerlink" title="activity-alias功能"></a>activity-alias功能</h3><p>知道了activity-alias的概念，那么它的功能是什么呢？activity-alias作为一个已存在Activity的别名，则应该可以通过该别名标签声明快速打开目标Activity。因此activity-alias可用来设置某个Activity的快捷入口，可以放在桌面上或者通过该别名被其他组件快速调起。该标签元素支持一些属性及intent-filter、meta-data等配置，因此可以触发一些跟目标Activity不同的功能逻辑，虽然打开的是同一个Activity。举个简单的例子，如之前需要先打开主界面，然后才能点击进入某个Activity，如果使用activity-alias为该Activity配置一个快捷入口，甚至可以为其在桌面生成一个图标，然后点击桌面图标可直接进入该Activity，该功能可满足某些需要快速到达功能界面的需求。</p>
 <h3 id="activity-alias_u8BED_u6CD5_u53CA_u58F0_u660E"><a href="#activity-alias_u8BED_u6CD5_u53CA_u58F0_u660E" class="headerlink" title="activity-alias语法及声明"></a>activity-alias语法及声明</h3><p>其基本语法如下</p>
@@ -293,478 +284,48 @@
 <p>点击“Alias快捷入口”图标，则可以直接打开SecondActivity，且SecondActivity的title为我们在activity-alias中设置的 label属性名称。</p>
 <p>具体效果如下图：</p>
 <p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/activity-alias.gif" alt="activity-alias"></p>
-
-            
-          </span>
-        
+</span>
       
     </div>
 
     <footer class="post-footer">
       
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/06/18/Geed/" itemprop="url">
-                  Geed
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-06-18T21:18:45+08:00" content="2016-06-18">
-              2016-06-18
-            </time>
-          </span>
-
+        <div class="post-tags">
           
-
+            <a href="/tags/AndroidManifest/" rel="tag">#AndroidManifest</a>
           
+            <a href="/tags/activity-alias/" rel="tag">#activity-alias</a>
+          
+        </div>
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
             
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2016/06/18/Geed/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/18/Geed/" itemprop="commentsCount"></span>
+              <a href="/2016/06/18/Geed/" rel="next" title="Geed">
+                <i class="fa fa-chevron-left"></i> Geed
               </a>
-            </span>
             
-          
+          </div>
 
-          
-
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
         </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
       
 
       
-        
-          <span itemprop="articleBody">
-            
-              <p>开通这个空间以来，很少写东西。后面打算把CSDN上的一些技术分享陆续搬过来，毕竟自己的空间方便备份与维护。</p>
-<p><a href="http://blog.csdn.net/ahence" target="_blank" rel="external">CSDN地址</a></p>
-<p>本空间的域名为<a href="http://geed.me/">geed.me</a>，希望大家能记得。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
       
     </footer>
   </article>
 
 
-    
-      
 
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/01/18/孤独的树/" itemprop="url">
-                  孤独的树
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-18T22:14:26+08:00" content="2016-01-18">
-              2016-01-18
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/随笔/" itemprop="url" rel="index">
-                    <span itemprop="name">随笔</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2016/01/18/孤独的树/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/18/孤独的树/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>空旷的田野</p>
-<p>在火车窗外飞驰</p>
-<p>我看见一棵树</p>
-<p>亭亭如盖</p>
-<p>空荡的世界里</p>
-<p>我不孤独</p>
-<p>喧嚣的尘世中</p>
-<p>我不寂寞</p>
-<p>一棵孤独的树</p>
-<p>向着地平线延伸</p>
-<p>顿时在我的眼中</p>
-<p>已是莽莽林海</p>
-<p><em>——于2008年4月17日</em></p>
-
-            
-          </span>
-        
+    <div class="post-spread">
       
     </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/01/10/ECNU光影/" itemprop="url">
-                  ECNU光影
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-10T21:57:39+08:00" content="2016-01-10">
-              2016-01-10
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/生活/" itemprop="url" rel="index">
-                    <span itemprop="name">生活</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2016/01/10/ECNU光影/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/10/ECNU光影/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>今天回校，新年后首次回去跟实验室的同学、导师例行小聚，在公司待久了回到学校总会感到无比轻松，也喜欢随手拍一拍校园的风景，不过今天上海的天气灰蒙蒙的，下午还下起了小雨。</p>
-<p>校园主干道，两边的梧桐叶子几乎已落尽，孤零零地在阴霾的天气下更显萧瑟，远远可以望见地理馆及招手的毛像。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/zhugandao.jpg" alt="校园主干道"></p>
-<p>文史楼门前的草坪已变黄，稀稀疏疏的人影，换作阳光晴好的日子，草地上定是坐满了看书、休息、聊天的人们。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/wenshilou.jpg" alt="文史楼"></p>
-<p>冬日的校园人真的很少，学生们大概都躲到图书馆去了吧，不过作为经典景色之一，丽虹桥上还是有人在拍照，除了我之外。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/lihongqiao.jpg" alt="丽虹桥"></p>
-<p>丽娃河还是那样清澈静谧，片片翠绿的荷叶、河边的校树水杉、河心亭、远处的拱桥依然构成最美的风景。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/liwahe.jpg" alt="丽娃河"></p>
-<p>终于到地理馆了，新装修后显得大气宽敞，只是当初让我们搬迁闵行，而如今上海纽约大学的学生也都已搬走，内部装修豪华的偌大场馆空着，真是有点浪费。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/diliguan.jpg" alt="地理馆"></p>
-<p>去河西的路，冬日周末也十分寂寥，校外的车辆也不算多，想起平日里下课后、午饭时这条路上的热闹。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/likedalou.jpg" alt="理科大楼"></p>
-<p>这样冷的天气，依然有运动爱好者们在操场上踢球，环球港及Sun Building都成了我们的背景。想起刚毕业第一年，每周都会回来打篮球，哎，貌似又有好久没有运动了。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/caochang.jpg" alt="操场"></p>
-<p>曾经的河西食堂在装修一新后，也光明正大地变成了秋林阁，“河西食堂”几个字也只好委屈在一个不显眼的角落。也罢，只是期待里面的饭菜口味依然如初。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/qiulinge.jpg" alt="秋林阁"></p>
-<p>校园是一方净土，在浮躁的社会上待一段时间，总想找一份内心的宁静，而大概就是这里吧。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/01/06/贺新郎.读史/" itemprop="url">
-                  贺新郎.读史
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-06T13:37:15+08:00" content="2016-01-06">
-              2016-01-06
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/杂谈/" itemprop="url" rel="index">
-                    <span itemprop="name">杂谈</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2016/01/06/贺新郎.读史/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/06/贺新郎.读史/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>人猿相揖别。</p>
-<p>只几个石头磨过，</p>
-<p>小儿时节。</p>
-<p>铜铁炉中翻火焰，</p>
-<p>为问何时猜得？</p>
-<p>不过几千寒热。</p>
-<p>人世难逢开口笑，</p>
-<p>上疆场彼此弯弓月。</p>
-<p>流遍了，</p>
-<p>郊原血。</p>
-<p>一篇读罢头飞雪，</p>
-<p>但记得斑斑点点，</p>
-<p>几行陈迹。</p>
-<p>五帝三皇神圣事，</p>
-<p>骗了无涯过客。</p>
-<p>有多少风流人物？</p>
-<p>盗跖庄蹻流誉后，</p>
-<p>更陈王奋起挥黄钺。</p>
-<p>歌未竟，</p>
-<p>东方白。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
-
-  </section>
-
-  
+  </div>
 
 
         </div>
@@ -773,6 +334,14 @@
 
 
         
+  <div class="comments" id="comments">
+    
+      <div id="disqus_thread">
+        <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+      </div>
+    
+  </div>
+
 
       </div>
 
@@ -793,8 +362,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap" >
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview sidebar-panel  sidebar-panel-active ">
+      <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" src="/images/avatar.png" alt="AN" itemprop="image"/>
           <p class="site-author-name" itemprop="name">AN</p>
@@ -866,6 +444,23 @@
       </section>
 
       
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc-indicator-top post-toc-indicator">
+            <i class="fa fa-angle-double-up"></i>
+          </div>
+          <div class="post-toc">
+            
+              
+            
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#activity-alias_u6807_u7B7E_u5143_u7D20"><span class="nav-number">1.</span> <span class="nav-text">activity-alias标签元素</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activity-alias_u529F_u80FD"><span class="nav-number">2.</span> <span class="nav-text">activity-alias功能</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activity-alias_u8BED_u6CD5_u53CA_u58F0_u660E"><span class="nav-number">3.</span> <span class="nav-text">activity-alias语法及声明</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#activity-alias_u7528_u6CD5_u793A_u4F8B"><span class="nav-number">4.</span> <span class="nav-text">activity-alias用法示例</span></a></li></ol></div>
+            
+          </div>
+          <div class="post-toc-indicator-bottom post-toc-indicator">
+            <i class="fa fa-angle-double-down"></i>
+          </div>
+        </section>
+      
 
     </div>
   </aside>
@@ -918,9 +513,9 @@
 
     <script type="text/javascript">
       var disqus_shortname = 'aspook';
-      var disqus_identifier = 'index.html';
-      var disqus_title = '';
-      var disqus_url = '';
+      var disqus_identifier = '2016/06/18/activity-alias详解及应用/';
+      var disqus_title = 'activity-alias详解及应用';
+      var disqus_url = 'http://geed.me/2016/06/18/activity-alias详解及应用/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
@@ -931,6 +526,8 @@
       }
 
       run_disqus_script('count.js');
+      
+        run_disqus_script('embed.js');
       
     </script>
   
@@ -954,6 +551,167 @@
   <script type="text/javascript" src="/vendors/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
 
   
+  
+<script type="text/javascript" src="/js/bootstrap.scrollspy.js?v=0.4.5.2" id="bootstrap.scrollspy.custom"></script>
+
+
+<script type="text/javascript" id="sidebar.toc.highlight">
+  $(document).ready(function () {
+    var tocSelector = '.post-toc';
+    var $tocSelector = $(tocSelector);
+    var activeCurrentSelector = '.active-current';
+
+    $tocSelector
+      .on('activate.bs.scrollspy', function () {
+        var $currentActiveElement = $(tocSelector + ' .active').last();
+
+        removeCurrentActiveClass();
+        $currentActiveElement.addClass('active-current');
+
+        $tocSelector[0].scrollTop = $currentActiveElement.position().top;
+      })
+      .on('clear.bs.scrollspy', function () {
+        removeCurrentActiveClass();
+      });
+
+    function removeCurrentActiveClass () {
+      $(tocSelector + ' ' + activeCurrentSelector)
+        .removeClass(activeCurrentSelector.substring(1));
+    }
+
+    function processTOC () {
+      getTOCMaxHeight();
+      toggleTOCOverflowIndicators();
+    }
+
+    function getTOCMaxHeight () {
+      var height = $('.sidebar').height() -
+                   $tocSelector.position().top -
+                   $('.post-toc-indicator-bottom').height();
+
+      $tocSelector.css('height', height);
+
+      return height;
+    }
+
+    function toggleTOCOverflowIndicators () {
+      tocOverflowIndicator(
+        '.post-toc-indicator-top',
+        $tocSelector.scrollTop() > 0 ? 'show' : 'hide'
+      );
+
+      tocOverflowIndicator(
+        '.post-toc-indicator-bottom',
+        $tocSelector.scrollTop() >= $tocSelector.find('ol').height() - $tocSelector.height() ? 'hide' : 'show'
+      )
+    }
+
+    $(document).on('sidebar.motion.complete', function () {
+      processTOC();
+    });
+
+    $('body').scrollspy({ target: tocSelector });
+    $(window).on('resize', function () {
+      if ( $('.sidebar').hasClass('sidebar-active') ) {
+        processTOC();
+      }
+    });
+
+    onScroll($tocSelector);
+
+    function onScroll (element) {
+      element.on('mousewheel DOMMouseScroll', function (event) {
+          var oe = event.originalEvent;
+          var delta = oe.wheelDelta || -oe.detail;
+
+          this.scrollTop += ( delta < 0 ? 1 : -1 ) * 30;
+          event.preventDefault();
+
+          toggleTOCOverflowIndicators();
+      });
+    }
+
+    function tocOverflowIndicator (indicator, action) {
+      var $indicator = $(indicator);
+      var opacity = action === 'show' ? 1 : 0;
+      $indicator.velocity ?
+        $indicator.velocity('stop').velocity({
+          opacity: opacity
+        }, { duration: 100 }) :
+        $indicator.stop().animate({
+          opacity: opacity
+        }, 100);
+    }
+
+  });
+</script>
+
+<script type="text/javascript" id="sidebar.nav">
+  $(document).ready(function () {
+    var html = $('html');
+    var TAB_ANIMATE_DURATION = 200;
+    var hasVelocity = $.isFunction(html.velocity);
+
+    $('.sidebar-nav li').on('click', function () {
+      var item = $(this);
+      var activeTabClassName = 'sidebar-nav-active';
+      var activePanelClassName = 'sidebar-panel-active';
+      if (item.hasClass(activeTabClassName)) {
+        return;
+      }
+
+      var currentTarget = $('.' + activePanelClassName);
+      var target = $('.' + item.data('target'));
+
+      hasVelocity ?
+        currentTarget.velocity('transition.slideUpOut', TAB_ANIMATE_DURATION, function () {
+          target
+            .velocity('stop')
+            .velocity('transition.slideDownIn', TAB_ANIMATE_DURATION)
+            .addClass(activePanelClassName);
+        }) :
+        currentTarget.animate({ opacity: 0 }, TAB_ANIMATE_DURATION, function () {
+          currentTarget.hide();
+          target
+            .stop()
+            .css({'opacity': 0, 'display': 'block'})
+            .animate({ opacity: 1 }, TAB_ANIMATE_DURATION, function () {
+              currentTarget.removeClass(activePanelClassName);
+              target.addClass(activePanelClassName);
+            });
+        });
+
+      item.siblings().removeClass(activeTabClassName);
+      item.addClass(activeTabClassName);
+    });
+
+    $('.post-toc a').on('click', function (e) {
+      e.preventDefault();
+      var targetSelector = escapeSelector(this.getAttribute('href'));
+      var offset = $(targetSelector).offset().top;
+      hasVelocity ?
+        html.velocity('stop').velocity('scroll', {
+          offset: offset  + 'px',
+          mobileHA: false
+        }) :
+        $('html, body').stop().animate({
+          scrollTop: offset
+        }, 500);
+    });
+
+    // Expand sidebar on post detail page by default, when post has a toc.
+    motionMiddleWares.sidebar = function () {
+      var $tocContent = $('.post-toc-content');
+      if (CONFIG.sidebar === 'post') {
+        if ($tocContent.length > 0 && $tocContent.html().trim().length > 0) {
+          displaySidebar();
+        }
+      }
+    };
+  });
+</script>
+
+
 
   <script type="text/javascript" src="/js/bootstrap.js"></script>
 
@@ -986,6 +744,10 @@
 
   
   
+
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"1","bdMiniList":false,"bdPic":"","bdStyle":"0","bdSize":"16"},"slide":{"type":"slide","bdImg":"3","bdPos":"left","bdTop":"250"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+
+
 
 </body>
 </html>
