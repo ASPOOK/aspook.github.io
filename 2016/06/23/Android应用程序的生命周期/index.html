@@ -35,7 +35,7 @@
 <link href="/css/main.css?v=0.4.5.2" rel="stylesheet" type="text/css" />
 
 
-  <meta name="keywords" content="Android Studio,Instant Run," />
+  <meta name="keywords" content="App生命周期," />
 
 
 
@@ -51,33 +51,23 @@
 
 
 
-<meta name="description" content="本文最早于2016-06-02发布在个人CSDN博客。
-首先说明一下，本文算不上严格意义的翻译，因此没有归档到译文类别。本文的主要内容及插图均来自《Instant Run: How Does it Work?!》一文，文末会附上此文地址。
-Instant Run是Android Studio2.0以上版本引入的一个新特性，它可以显著地减少应用编译及部署的时间。
-Instant Run是一个神奇的功">
+<meta name="description" content="本文最初于2016-01-22发布于个人CSDN博客。
+大家都知道，Android可以同时运行多个应用并且支持互相之间的切换，这是因为Android是基于Linux的多用户、多任务的操作系统，Android应用的启动与执行同样也是基于Linux进程的。
+Linux进程Linux为每个用户分配一个唯一的UserId，并通过沙盒机制来隔离每个用户，每个用户通过权限控制只能访问属于自己的资源（root用">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android Studio Instant Run的工作原理">
-<meta property="og:url" content="http://geed.me/2016/06/20/Android-Studio-Instant-Run的工作原理/index.html">
+<meta property="og:title" content="Android应用程序的生命周期">
+<meta property="og:url" content="http://geed.me/2016/06/23/Android应用程序的生命周期/index.html">
 <meta property="og:site_name" content="Serendipity">
-<meta property="og:description" content="本文最早于2016-06-02发布在个人CSDN博客。
-首先说明一下，本文算不上严格意义的翻译，因此没有归档到译文类别。本文的主要内容及插图均来自《Instant Run: How Does it Work?!》一文，文末会附上此文地址。
-Instant Run是Android Studio2.0以上版本引入的一个新特性，它可以显著地减少应用编译及部署的时间。
-Instant Run是一个神奇的功">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/common-build.png">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/Instant%20Run.png">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-8Ti0IqtTEDEh8HoPcmvVZg.png">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-U2tXGUWaeDU7L3u9Z_U0fw.png">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-_vixZYtLjc92xt2IjOGRZQ.png">
-<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-wqbGl-CwPN7L9IEigKeBiA.png">
-<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*26mhk7bwEfALS54H2lsTYQ.gif">
-<meta property="og:image" content="https://cdn-images-1.medium.com/max/1600/1*YPuv3jzAFpPIZuiLOBxLfQ.gif">
-<meta property="og:updated_time" content="2016-06-20T03:41:31.000Z">
+<meta property="og:description" content="本文最初于2016-01-22发布于个人CSDN博客。
+大家都知道，Android可以同时运行多个应用并且支持互相之间的切换，这是因为Android是基于Linux的多用户、多任务的操作系统，Android应用的启动与执行同样也是基于Linux进程的。
+Linux进程Linux为每个用户分配一个唯一的UserId，并通过沙盒机制来隔离每个用户，每个用户通过权限控制只能访问属于自己的资源（root用">
+<meta property="og:image" content="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/20160301152658050.jpg">
+<meta property="og:updated_time" content="2016-06-23T06:01:50.000Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="Android Studio Instant Run的工作原理">
-<meta name="twitter:description" content="本文最早于2016-06-02发布在个人CSDN博客。
-首先说明一下，本文算不上严格意义的翻译，因此没有归档到译文类别。本文的主要内容及插图均来自《Instant Run: How Does it Work?!》一文，文末会附上此文地址。
-Instant Run是Android Studio2.0以上版本引入的一个新特性，它可以显著地减少应用编译及部署的时间。
-Instant Run是一个神奇的功">
+<meta name="twitter:title" content="Android应用程序的生命周期">
+<meta name="twitter:description" content="本文最初于2016-01-22发布于个人CSDN博客。
+大家都知道，Android可以同时运行多个应用并且支持互相之间的切换，这是因为Android是基于Linux的多用户、多任务的操作系统，Android应用的启动与执行同样也是基于Linux进程的。
+Linux进程Linux为每个用户分配一个唯一的UserId，并通过沙盒机制来隔离每个用户，每个用户通过权限控制只能访问属于自己的资源（root用">
 
 
 
@@ -89,7 +79,7 @@ Instant Run是一个神奇的功">
   };
 </script>
 
-  <title> Android Studio Instant Run的工作原理 | Serendipity </title>
+  <title> Android应用程序的生命周期 | Serendipity </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -229,7 +219,7 @@ Instant Run是一个神奇的功">
             
             
               
-                Android Studio Instant Run的工作原理
+                Android应用程序的生命周期
               
             
           </h1>
@@ -238,8 +228,8 @@ Instant Run是一个神奇的功">
         <div class="post-meta">
           <span class="post-time">
             发表于
-            <time itemprop="dateCreated" datetime="2016-06-20T11:18:24+08:00" content="2016-06-20">
-              2016-06-20
+            <time itemprop="dateCreated" datetime="2016-06-23T13:56:40+08:00" content="2016-06-23">
+              2016-06-23
             </time>
           </span>
 
@@ -264,8 +254,8 @@ Instant Run是一个神奇的功">
             
               <span class="post-comments-count">
               &nbsp; | &nbsp;
-              <a href="/2016/06/20/Android-Studio-Instant-Run的工作原理/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/20/Android-Studio-Instant-Run的工作原理/" itemprop="commentsCount"></span>
+              <a href="/2016/06/23/Android应用程序的生命周期/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/Android应用程序的生命周期/" itemprop="commentsCount"></span>
               </a>
             </span>
             
@@ -284,69 +274,29 @@ Instant Run是一个神奇的功">
       
 
       
-        <span itemprop="articleBody"><p>本文最早于2016-06-02发布在个人<a href="http://blog.csdn.net/ahence/article/details/51563708" target="_blank" rel="external">CSDN博客</a>。</p>
-<p>首先说明一下，本文算不上严格意义的翻译，因此没有归档到译文类别。本文的主要内容及插图均来自《Instant Run: How Does it Work?!》一文，文末会附上此文地址。</p>
-<p>Instant Run是Android Studio2.0以上版本引入的一个新特性，它可以显著地减少应用编译及部署的时间。</p>
-<p>Instant Run是一个神奇的功能，为什么这么说呢？当第一次你点击run或debug按钮的时候，跟正常的编译部署流程是一样的；当你对代码做了一些修改，然后再次点击run或debug按钮（这时旁边会出现一个⚡标志），接下来就是见证奇迹的时候了，你甚至还没来得及将注意力从Android Studio转移到手机上来，应用已经编译部署好了，这就是它的神奇之处。</p>
-<p>接下来就是了解Instant Run的工作原理了，这里有一个官方视频连接：<a href="https://youtu.be/StqAZ1OQbqA" target="_blank" rel="external">Instant Run:An Android Tool Time Deep Dive</a>，有兴趣的朋友可以直接点开看。</p>
-<h4 id="Instant_Run_u7684_u7279_u70B9"><a href="#Instant_Run_u7684_u7279_u70B9" class="headerlink" title="Instant Run的特点"></a>Instant Run的特点</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/common-build.png" alt="这里写图片描述"></p>
-<p>上图为应用程序一般的编译和部署过程：</p>
+        <span itemprop="articleBody"><p>本文最初于2016-01-22发布于个人<a href="http://blog.csdn.net/ahence/article/details/50561345" target="_blank" rel="external">CSDN博客</a>。</p>
+<p>大家都知道，Android可以同时运行多个应用并且支持互相之间的切换，这是因为Android是基于Linux的多用户、多任务的操作系统，Android应用的启动与执行同样也是基于Linux进程的。</p>
+<h4 id="Linux_u8FDB_u7A0B"><a href="#Linux_u8FDB_u7A0B" class="headerlink" title="Linux进程"></a>Linux进程</h4><p>Linux为每个用户分配一个唯一的UserId，并通过沙盒机制来隔离每个用户，每个用户通过权限控制只能访问属于自己的资源（root用户除外）。在Android中，每个App相当于一个用户，因此这些应用只能访问自己的数据，而不能访问其他App的资源。通常情况下，当启动一个App时，Android系统会为该应用启动一个进程和一个独享的虚拟机，如下图（图片来自Efficient Android Threading）所示：</p>
+<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/20160301152658050.jpg" alt="Android中的进程"></p>
+<p>如上所述，一般情况下，每个App运行在一个独立的进程中，当然如果有需要，也可以让一个App运行在多个进程中（如App中的Service可以运行在另一个进程中），或者让多个App运行在同一个进程中（如插件化加载机制，可以通过共享UserId实现）。</p>
+<h4 id="u5E94_u7528_u7A0B_u5E8F_u7684_u751F_u547D_u5468_u671F"><a href="#u5E94_u7528_u7A0B_u5E8F_u7684_u751F_u547D_u5468_u671F" class="headerlink" title="应用程序的生命周期"></a>应用程序的生命周期</h4><p>通过<code>android.app.Application</code>这个类可知，其启动于<code>onCreate()</code>方法，终止于<code>onTerminate()</code>方法，但是<code>onTerminate()</code>的API中明确说明：此回调只存在于模拟环境，在真正的Android设备上是不会被执行的。事实上，一个应用程序的终止是由于系统杀死了其所在的进程，具体原因及过程下面会详细分析。</p>
+<h5 id="u5E94_u7528_u7A0B_u5E8F_u7684_u542F_u52A8"><a href="#u5E94_u7528_u7A0B_u5E8F_u7684_u542F_u52A8" class="headerlink" title="应用程序的启动"></a>应用程序的启动</h5><p>一个应用<strong>初次启动</strong>时一般会遵循如下流程：</p>
 <ol>
-<li>编译</li>
-<li>部署安装</li>
-<li>App启动</li>
-<li>Activity启动</li>
+<li>启动一个Linux进程</li>
+<li>创建runtime</li>
+<li>创建Application实例</li>
+<li>创建第一个启动的组件，如启动页Activity</li>
 </ol>
-<p>经过以上几个步骤之后才能看到代码修改的效果。</p>
-<p>对比通用的编译部署过程，Instant Run的目标就很清晰了：</p>
-<blockquote>
+<p>这样一个App就运行起来了，需要注意的是，前两个步骤是需要系统开销及时间的，而App又可能会被频繁启动，因此可能导致不好的用户体验，因此Zygote就出现了。Zygote也是一个进程，它是在系统启动时就创建好了，并且它已经预加载且共享核心类库，这样当启动一个App时，其所需的进程就fork自Zygote进程，这样就加快了应用的启动速度，提升了用户体验。事实上，所有的App进程都是fork自Zygote进程，也可以说Zygote进程是所有应用的父进程，这一点通过打印应用程序的PPID（Parent process identifier）可以验证。</p>
+<h5 id="u5E94_u7528_u7A0B_u5E8F_u7684_u7EC8_u6B62"><a href="#u5E94_u7528_u7A0B_u5E8F_u7684_u7EC8_u6B62" class="headerlink" title="应用程序的终止"></a>应用程序的终止</h5><p>说完了应用的启动，再来看应用是如何终止的。前文讲<code>onTerminate()</code>回调在生产环境中是不会被调用的，这是因为用户随时都可能启动应用，如果当所有组件都destory后，每当退出应用时就销毁掉其所有资源，杀掉其进程，那么再次启动应用时就需要重新创建进程，很可能刚退出就又启动，或者过了一小会儿就重新启动，这样的开销是不容忽视的。因此系统巧妙地设计为当应用退出时并非立即销毁掉其资源，而是当系统资源不足时才按优先级杀掉部分进程。于是可以得到这样的结论：应用程序不会主动终止自己，即使所有的组件都已经销毁了。这也是前文“初次启动”几个字加粗说明的原因，即如果进程还未被系统销毁，再次启动时则不必重新创建进程。</p>
+<p>最后再来看各种进程的优先级：</p>
 <ol>
-<li>尽可能去掉上述过程中不必要的步骤</li>
-<li>让剩下的必要步骤越快越好</li>
+<li>前台进程——如正在前台运行的应用、绑定前台Activity的远程Service、正在运行的BroadcastReceiver</li>
+<li>可见进程——如Activity被部分遮挡的应用</li>
+<li>服务——如未绑定任何可见组件，但在后台运行的Service</li>
+<li>后台进程——例如应用被切到后台，所有的Activity已经不可见</li>
+<li>空进程——已经没有任何存活组件的应用进程，它们的存在仅为了下次更好的启动，当系统资源不足时，这类进程是最先被系统杀死的。</li>
 </ol>
-</blockquote>
-<p>上述两点在实际中表现为：</p>
-<ul>
-<li>仅对增量和变化做编译和部署</li>
-<li>尽量不要重新安装App</li>
-<li>尽量不要重启App</li>
-<li>甚至不要重启Activity</li>
-</ul>
-<h4 id="Instant_Run__3D_Incremental_build_+_Hot_2C_Warm_2C_or_Cold_swap"><a href="#Instant_Run__3D_Incremental_build_+_Hot_2C_Warm_2C_or_Cold_swap" class="headerlink" title="Instant Run = Incremental build + Hot, Warm, or Cold swap"></a>Instant Run = Incremental build + Hot, Warm, or Cold swap</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/Instant%20Run.png" alt="这里写图片描述"></p>
-<p>由上图可知，Instant Run可以理解为增量编译和部署（分为Hot Swap、Warm Swap和Cold Swap三种方式）。</p>
-<p><strong>Hot Swap:</strong>此种方式不需要重启App，甚至不需要重启Activity就能看到代码修改引起的变化，一般适用于某个方法实现中的微小改动，如Toast或某个String字串的内容修改。</p>
-<p><strong>Warm Swap:</strong>此种方式需要重启Activity才能看到修改导致的变化，经常用于资源相关的代码改变。</p>
-<p><strong>Cold Swap:</strong>此种方式需要App重启，但并不需要App重新安装，适用于结构性的代码修改如继承关系或方法签名改变。</p>
-<h4 id="u6B63_u5E38_u7684_u6784_u5EFA_u6D41_u7A0B"><a href="#u6B63_u5E38_u7684_u6784_u5EFA_u6D41_u7A0B" class="headerlink" title="正常的构建流程"></a>正常的构建流程</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-8Ti0IqtTEDEh8HoPcmvVZg.png" alt="这里写图片描述"></p>
-<p>Manifest文件会被合并，然后与资源文件一起被AAPT工具打包；同时java文件也被编译为字节码，然后转成dex文件，最终上述文件一起打包成APK。</p>
-<h4 id="u4F7F_u7528Instant_Run_u7684_u6784_u5EFA_u6D41_u7A0B"><a href="#u4F7F_u7528Instant_Run_u7684_u6784_u5EFA_u6D41_u7A0B" class="headerlink" title="使用Instant Run的构建流程"></a>使用Instant Run的构建流程</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-U2tXGUWaeDU7L3u9Z_U0fw.png" alt="这里写图片描述"></p>
-<p>字节码被添加到.class文件中，同时一个appserver类被注入到APK中。</p>
-<p>另外还会添加一个新的Application类定义，它用来注入自定义的类加载器用来调起App Server，因此Manifest也会被修改以便可以使用它。如果你已创建了自己的Application类，Instant Run将会使用新的来代理你的Application。</p>
-<p>现在Instant Run就跑起来了，所以当你修改了部分代码，然后再次点击run或者debug时，Instant Run将会使用Hot Swap、Warm Swap或者Cold Swap尽可能地缩短原来的构建过程。</p>
-<h4 id="Hot_Swapping"><a href="#Hot_Swapping" class="headerlink" title="Hot Swapping"></a>Hot Swapping</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-_vixZYtLjc92xt2IjOGRZQ.png" alt="这里写图片描述"></p>
-<p>在开发过程中，Android Studio会监控哪些文件发生了变化，并使用Gradle工具为那些变化的class文件生成dex文件。</p>
-<p>这些新的dex文件被Android Studio挑选出来然后部署到我们应用上的App Server上。</p>
-<p>由于原始版本的class文件已经存在于运行的App中，Gradle可以高效地将更新的文件替换掉以前的旧文件，这些新文件可以被App Server使用自定义的类加载器加载。</p>
-<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/1-wqbGl-CwPN7L9IEigKeBiA.png" alt="这里写图片描述"></p>
-<p>随后，每次当应用中的一个方法被调用时，App Server会跟原始文件通信来检查他们是否被更新了。如果是的话，更新文件中的修改过的新方法会被委托来执行。</p>
-<p><img src="https://cdn-images-1.medium.com/max/1600/1*26mhk7bwEfALS54H2lsTYQ.gif" alt="这里写图片描述"></p>
-<p>如上图，如果你设了断点你将会看到被覆盖的方法的调用栈情况。</p>
-<p>对于方法实现的微小改变，使用重定向方法的方式可以很好地工作，但是某些需要Activity重启才能加载的情况又如何呢？</p>
-<h4 id="Warm_Swapping"><a href="#Warm_Swapping" class="headerlink" title="Warm Swapping"></a>Warm Swapping</h4><p>Warm Swap会重启Activity，资源会在Activity启动时加载，因此对资源的修改会要求重启Activity来实现资源的重新加载。</p>
-<p>目前，对资源的任何修改将会导致资源重新打包与部署到App，Android Studio的技术人员也在研究资源的增量打包与部署技术。</p>
-<blockquote>
-<p>需要注意的是当Manifest中引用的资源被修改时，或者Manifest文件本身被修改了，Warm Swap并不能工作，因为Manifest中的配置信息是在APK被安装时读取的。对Manifest的修改或其引用到的资源的修改将会触发完整的编译和部署流程。</p>
-</blockquote>
-<p>不幸的是，重启Activity并不能应用于结构变化。添加、删除或者修改注记、静态或实例方法签名，或者修改父类、静态初始化逻辑都将需要Cold Swap方式。</p>
-<h4 id="Cold_Swapping"><a href="#Cold_Swapping" class="headerlink" title="Cold Swapping"></a>Cold Swapping</h4><p>应用被部署时会被分割为多个部分，每一部分都有自己的dex文件，class文件根据它们的包名被分配到不同的部分。当使用Cold Swap部署时，一个修改过的类必须与其在同一dex中的其他类一起重新生成dex，然后才能部署到目标设备。</p>
-<p>这种方式依赖于multidex机制，仅在Android5.0(API level 21)或更高设备上才支持。</p>
-<p>对于低于API level 20的设备而言，使用的是Dalvik模式，因此不支持Instant Run，则会执行完整的APK安装过程。</p>
-<h4 id="Instant_Run_u5F88_u806A_u660E_uFF0C_u4F46_u5B83_u4E0D_u80FD_u56DE_u9000"><a href="#Instant_Run_u5F88_u806A_u660E_uFF0C_u4F46_u5B83_u4E0D_u80FD_u56DE_u9000" class="headerlink" title="Instant Run很聪明，但它不能回退"></a>Instant Run很聪明，但它不能回退</h4><p>由于Hot Swap和Warm Swap不会重启应用，因此修改某些在应用启动时才会初始化的代码时，必须重启App才能看到对应的效果。</p>
-<p><img src="https://cdn-images-1.medium.com/max/1600/1*YPuv3jzAFpPIZuiLOBxLfQ.gif" alt="这里写图片描述"></p>
-<h4 id="u5176_u4ED6"><a href="#u5176_u4ED6" class="headerlink" title="其他"></a>其他</h4><p>Instant Run是由Android Studio控制的，因此要从IDE中启动run或debug，而不是从手机设备中启动或重启应用。</p>
-<p>Instant Run目前仅在主线程上支持的最好，因此如果应用使用了多线程，在其他线程上使用Hot Swap与Warm Swap将会降级为Cold Swap，如果API level小于21的话直接转为完整构建与部署。</p>
-<p>Instant Run也在不断改进，Android Studio团队也在开发新技术让更多的情况可以支持Hot Swap，减少Cold Swap甚至完整构建，相信Android Studio后面的版本越来越好用。</p>
-<p>来源英文文章<a href="https://medium.com/google-developers/instant-run-how-does-it-work-294a1633367f#.h38y1hvjx" target="_blank" rel="external">《Instant Run: How Does it Work?!》</a></p>
 </span>
       
     </div>
@@ -355,9 +305,7 @@ Instant Run是一个神奇的功">
       
         <div class="post-tags">
           
-            <a href="/tags/Android-Studio/" rel="tag">#Android Studio</a>
-          
-            <a href="/tags/Instant-Run/" rel="tag">#Instant Run</a>
+            <a href="/tags/App生命周期/" rel="tag">#App生命周期</a>
           
         </div>
       
@@ -366,17 +314,13 @@ Instant Run是一个神奇的功">
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2016/06/18/activity-alias详解及应用/" rel="next" title="activity-alias详解及应用">
-                <i class="fa fa-chevron-left"></i> activity-alias详解及应用
+              <a href="/2016/06/22/深入理解Android中的线程及线程间通信/" rel="next" title="深入理解Android中的线程及线程间通信">
+                <i class="fa fa-chevron-left"></i> 深入理解Android中的线程及线程间通信
               </a>
             
           </div>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2016/06/20/Android广播纪要/" rel="prev" title="Android广播纪要">
-                Android广播纪要 <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -520,7 +464,7 @@ Instant Run是一个神奇的功">
               
             
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Instant_Run_u7684_u7279_u70B9"><span class="nav-number">1.</span> <span class="nav-text">Instant Run的特点</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Instant_Run__3D_Incremental_build_+_Hot_2C_Warm_2C_or_Cold_swap"><span class="nav-number">2.</span> <span class="nav-text">Instant Run = Incremental build + Hot, Warm, or Cold swap</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u6B63_u5E38_u7684_u6784_u5EFA_u6D41_u7A0B"><span class="nav-number">3.</span> <span class="nav-text">正常的构建流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u4F7F_u7528Instant_Run_u7684_u6784_u5EFA_u6D41_u7A0B"><span class="nav-number">4.</span> <span class="nav-text">使用Instant Run的构建流程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Hot_Swapping"><span class="nav-number">5.</span> <span class="nav-text">Hot Swapping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Warm_Swapping"><span class="nav-number">6.</span> <span class="nav-text">Warm Swapping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Cold_Swapping"><span class="nav-number">7.</span> <span class="nav-text">Cold Swapping</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Instant_Run_u5F88_u806A_u660E_uFF0C_u4F46_u5B83_u4E0D_u80FD_u56DE_u9000"><span class="nav-number">8.</span> <span class="nav-text">Instant Run很聪明，但它不能回退</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u5176_u4ED6"><span class="nav-number">9.</span> <span class="nav-text">其他</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#Linux_u8FDB_u7A0B"><span class="nav-number">1.</span> <span class="nav-text">Linux进程</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#u5E94_u7528_u7A0B_u5E8F_u7684_u751F_u547D_u5468_u671F"><span class="nav-number">2.</span> <span class="nav-text">应用程序的生命周期</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#u5E94_u7528_u7A0B_u5E8F_u7684_u542F_u52A8"><span class="nav-number">2.1.</span> <span class="nav-text">应用程序的启动</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#u5E94_u7528_u7A0B_u5E8F_u7684_u7EC8_u6B62"><span class="nav-number">2.2.</span> <span class="nav-text">应用程序的终止</span></a></li></ol></li></ol></div>
             
           </div>
           <div class="post-toc-indicator-bottom post-toc-indicator">
@@ -580,9 +524,9 @@ Instant Run是一个神奇的功">
 
     <script type="text/javascript">
       var disqus_shortname = 'aspook';
-      var disqus_identifier = '2016/06/20/Android-Studio-Instant-Run的工作原理/';
-      var disqus_title = 'Android Studio Instant Run的工作原理';
-      var disqus_url = 'http://geed.me/2016/06/20/Android-Studio-Instant-Run的工作原理/';
+      var disqus_identifier = '2016/06/23/Android应用程序的生命周期/';
+      var disqus_title = 'Android应用程序的生命周期';
+      var disqus_url = 'http://geed.me/2016/06/23/Android应用程序的生命周期/';
 
       function run_disqus_script(disqus_script){
         var dsq = document.createElement('script');
