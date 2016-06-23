@@ -220,6 +220,305 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/23/巧用AsyncTask的onProgressUpdate回调/" itemprop="url">
+                  巧用AsyncTask的onProgressUpdate回调
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-23T14:09:22+08:00" content="2016-06-23">
+              2016-06-23
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/06/23/巧用AsyncTask的onProgressUpdate回调/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/23/巧用AsyncTask的onProgressUpdate回调/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>本文最初于2016-04-05发布于个人<a href="http://blog.csdn.net/ahence/article/details/51064466" target="_blank" rel="external">CSDN博客</a>。</p>
+<h3 id="AsyncTask_u7B80_u4ECB"><a href="#AsyncTask_u7B80_u4ECB" class="headerlink" title="AsyncTask简介"></a>AsyncTask简介</h3><p>AsyncTask相信大家已经特别熟悉了，它是Android提供的一个轻量级的异步处理类。它简单易用，可以很容易地执行后台任务，也可以很方便地将后台任务执行的进度与结果发送到UI线程。</p>
+<h3 id="u7231_u4E0E_u6068"><a href="#u7231_u4E0E_u6068" class="headerlink" title="爱与恨"></a>爱与恨</h3><p>由于Android的单线程模型，异步处理在Android开发中显得尤为重要，因此线程中的交互不可避免。假如我们利用Android消息机制自己实现这个过程，则较为复杂且有着发生各种各样错误的风险。使用AsyncTask则较为方便，它为我们封装好了工作线程的执行与交互的过程，我们仅需要派生一个AsyncTask的子类，实现几个回调，然后在UI线程启动这个task即可，整个使用过程相当简单。<br>但世界上没有十全十美的东西，AsyncTask也一样，虽然它轻便易用，但也有一些坑，让人又爱又恨。<br>如AsyncTask跟系统版本的关系，AsyncTask在API 4之前是串行执行的，在API 4~12则是并行执行的，等到了API 13+，它又改回了串行执行，另外AsyncTask.executeOnExecutor()则是在API 11才开始支持的，因此如果想让各版本实现一致的用户体验，就不得不注意这些陷阱。</p>
+<p>AsyncTask虽然简单，但也有一些场景并非最佳选择，如一个后台任务，并不需要传入参数也不需要其返回数据，这种场景完全可以使用一个Thread来替代。还有假如某个后台任务需要Looper，则使用HandlerThread可能是更好的选择。</p>
+<p>由于本文主题为“巧用onProgressUpdate回调”，因此以上只是简单概括一下AsyncTask的优缺点，真要写的话，就成了一篇很长的文章了，相关的文章网上也有很多。如果有不清楚的也可留言讨论，另外建议看一下AsyncTask的源码，下面切入主题。</p>
+<h3 id="u5DE7_u7528onProgressUpdate_u56DE_u8C03"><a href="#u5DE7_u7528onProgressUpdate_u56DE_u8C03" class="headerlink" title="巧用onProgressUpdate回调"></a>巧用onProgressUpdate回调</h3><p>先来看下AsyncTask的几个主要回调：</p>
+<ul>
+<li><code>onPreExecute</code> 此回调是在主线程执行的，用来在后台任务执行前做一些预处理的工作。</li>
+<li><code>doInBackground</code> 此回调是最重要的一个，用来处理后台任务，因此它必须在子线程运行。</li>
+<li><code>onProgressUpdate</code> 此回调会将后台任务的执行进度发到UI线程，因此它是在UI线程中运行的，而且它是与<code>doInBackground</code>同时运行的。</li>
+<li><code>onPostExecute</code> 顾名思义，此回调表示当后台任务执行完了，会通过它将结果返回给UI线程，它是在UI线程运行的。</li>
+<li><code>onCancelled</code> 当取消一个任务时，会走到这个回调。</li>
+</ul>
+<p>创建一个AsyncTask子类的方法一般如下所示：</p>
+<pre><code>private static class ImageDownloadTask extends AsyncTask&lt;String, int, Object&gt; {}
+</code></pre><p>值得注意的是AsyncTask的实现类需要定义为静态内部类或者独立类，否则会持有外部类的引用，可能造成内存泄露。</p>
+<p>上面的三个参数，第一个表示输入的参数，可以从UI线程传到子线程；第二个参数一般表示任务的执行进度，所以最常见的就是int类型；第三个参数则表示子线程执行完任务，返回给UI线程的数据类型，可为任意对象。</p>
+<p>因此对于回调的使用，我们通常是这样的：<code>doInBackground</code>执行后台任务；<code>onProgressUpdate</code>用来更新后台任务的执行进度，最常见的如下载进度；执行完任务后，使用<code>onPostExecute</code>将结果返回给UI线程。</p>
+<p>这里来展示一种巧用<code>onProgressUpdate</code>回调的场景，假设一个任务需要下载多张图片。可以让<code>onProgressUpdate</code>回调里返回下载好的图片，这样就可以在下载过程中，下载好一张图片展示一张，而不必等到多张图片全部下载完成后再通过<code>onPostExecute</code>回调将结果返回，实时渲染的用户体验显然更好，至于<code>onPostExecute</code>，则完全可以不用了。如果你想问如何确保<code>onProgressUpdate</code>在下载好每一张图片后会被调用？那么还记得<code>publishProgress</code>方法吗？它在源代码里的定义如下：</p>
+<pre><code>/**
+ * This method can be invoked from {@link #doInBackground} to
+ * publish updates on the UI thread while the background computation is
+ * still running. Each call to this method will trigger the execution of
+ * {@link #onProgressUpdate} on the UI thread.
+ *
+ * {@link #onProgressUpdate} will not be called if the task has been
+ * canceled.
+ *
+ * @param values The progress values to update the UI with.
+ *
+ * @see #onProgressUpdate
+ * @see #doInBackground
+ */
+@WorkerThread
+protected final void publishProgress(Progress... values) {
+    if (!isCancelled()) {
+        getHandler().obtainMessage(MESSAGE_POST_PROGRESS,
+                new AsyncTaskResult&lt;Progress&gt;(this, values)).sendToTarget();
+    }
+}
+</code></pre><p>注释已经写的很明确了，只需要在<code>doInBackground</code>里的合适地方调用<code>publishProgress</code>就可以触发<code>onProgressUpdate</code>回调了。</p>
+<h3 id="u4EE3_u7801_u793A_u4F8B"><a href="#u4EE3_u7801_u793A_u4F8B" class="headerlink" title="代码示例"></a>代码示例</h3><p>这里就是上述巧用场景的具体实现，一个Activity界面，一个下载按钮，点击后就会启动一个AsyncTask去下载4张图片，同时显示一个进度条，下载完成后，进度条消失。</p>
+<h4 id="u754C_u9762_u5E03_u5C40"><a href="#u754C_u9762_u5E03_u5C40" class="headerlink" title="界面布局"></a>界面布局</h4><p>该示例的界面布局如下：</p>
+<pre><code>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;
+&lt;RelativeLayout
+xmlns:android=&quot;http://schemas.android.com/apk/res/android&quot;
+xmlns:app=&quot;http://schemas.android.com/apk/res-auto&quot;
+xmlns:tools=&quot;http://schemas.android.com/tools&quot;
+android:layout_width=&quot;match_parent&quot;
+android:layout_height=&quot;match_parent&quot;
+android:paddingBottom=&quot;@dimen/activity_vertical_margin&quot;
+android:paddingLeft=&quot;@dimen/activity_horizontal_margin&quot;
+android:paddingRight=&quot;@dimen/activity_horizontal_margin&quot;
+android:paddingTop=&quot;@dimen/activity_vertical_margin&quot;
+app:layout_behavior=&quot;@string/appbar_scrolling_view_behavior&quot;
+tools:context=&quot;me.geed.cleverasynctask.MainActivity&quot;
+tools:showIn=&quot;@layout/activity_main&quot;&gt;
+
+&lt;ProgressBar
+    android:id=&quot;@+id/progress&quot;
+    style=&quot;@style/Base.Widget.AppCompat.ProgressBar.Horizontal&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:layout_alignParentTop=&quot;true&quot;
+    android:visibility=&quot;gone&quot;/&gt;
+
+&lt;Button
+    android:id=&quot;@+id/btn_start&quot;
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:layout_below=&quot;@+id/progress&quot;
+    android:text=&quot;开始下载&quot;/&gt;
+
+&lt;ScrollView
+    android:layout_width=&quot;match_parent&quot;
+    android:layout_height=&quot;wrap_content&quot;
+    android:layout_below=&quot;@+id/btn_start&quot;&gt;
+
+    &lt;LinearLayout
+        android:id=&quot;@+id/lL_image_container&quot;
+        android:layout_width=&quot;match_parent&quot;
+        android:layout_height=&quot;wrap_content&quot;
+        android:orientation=&quot;vertical&quot;&gt;
+    &lt;/LinearLayout&gt;
+&lt;/ScrollView&gt;
+&lt;/RelativeLayout&gt;
+</code></pre><h4 id="u76F8_u5173_u63A7_u4EF6_u53CA_u754C_u9762_u7684_u521D_u59CB_u5316"><a href="#u76F8_u5173_u63A7_u4EF6_u53CA_u754C_u9762_u7684_u521D_u59CB_u5316" class="headerlink" title="相关控件及界面的初始化"></a>相关控件及界面的初始化</h4><p>相关控件及变量的定义如下：</p>
+<pre><code>private static final String[] IMAGE_URLS = {
+        &quot;http://img0w.pconline.com.cn/pconline/1401/15/4172339_touxiang/spcgroup/width_640,qua_30/23.jpg&quot;,
+        &quot;http://img0w.pconline.com.cn/pconline/1401/15/4172339_touxiang/spcgroup/width_640,qua_30/22.jpg&quot;,
+        &quot;http://img0w.pconline.com.cn/pconline/1401/15/4172339_touxiang/spcgroup/width_640,qua_30/24.jpg&quot;,
+        &quot;http://img0w.pconline.com.cn/pconline/1401/15/4172339_touxiang/spcgroup/width_640,qua_30/26.jpg&quot;
+};
+
+private boolean hasExecuted = false;
+ImageDownloadTask mImageDownloadTask;
+ProgressBar mProgressBar;
+LinearLayout mLinearLayout;
+Button mButton;
+</code></pre><p>初始化如下：</p>
+<pre><code>mLinearLayout = (LinearLayout) findViewById(R.id.lL_image_container);
+mProgressBar = (ProgressBar) findViewById(R.id.progress);
+mProgressBar.setMax(IMAGE_URLS.length);
+mButton = (Button) findViewById(R.id.btn_start);
+mImageDownloadTask = new ImageDownloadTask(this);
+</code></pre><h4 id="AsyncTask_u7684_u5B9A_u4E49"><a href="#AsyncTask_u7684_u5B9A_u4E49" class="headerlink" title="AsyncTask的定义"></a>AsyncTask的定义</h4><p>AsyncTask定义为一个内部类，具体如下：</p>
+<pre><code>/**
+ * AsyncTask的实现类需要定义为静态内部类或者独立类，否则会持有外部类的引用，可能造成内存泄露
+ */
+private static class ImageDownloadTask extends AsyncTask&lt;String, Bitmap, Void&gt; {
+
+    private MainActivity mActivity;
+    private int mCount = 0;
+
+    public ImageDownloadTask(MainActivity activity) {
+        this.mActivity = activity;
+    }
+
+    public void setActivity(MainActivity activity) {
+        this.mActivity = null;
+    }
+
+    @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        mActivity.mProgressBar.setVisibility(View.VISIBLE);
+        mActivity.mProgressBar.setProgress(0);
+    }
+
+    @Override
+    protected Void doInBackground(String... urls) {
+        for (String url : urls) {
+            if (!isCancelled()) {
+                Bitmap bitmap = downloadImage(url);
+                publishProgress(bitmap);
+            }
+        }
+        return null;
+    }
+
+    @Override
+    protected void onProgressUpdate(Bitmap... values) {
+        super.onProgressUpdate(values);
+        if (mActivity != null) {
+            mActivity.mProgressBar.setProgress(++mCount);
+            ImageView iv = new ImageView(mActivity);
+            iv.setImageBitmap(values[0]);
+            mActivity.mLinearLayout.addView(iv);
+        }
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        super.onPostExecute(aVoid);
+        if (mActivity != null) {
+            mActivity.mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    @Override
+    protected void onCancelled() {
+        super.onCancelled();
+        if (mActivity != null) {
+            mActivity.mProgressBar.setVisibility(View.GONE);
+        }
+    }
+
+    /**
+     * 图片下载，真正app中的实现可能并非这样
+     *
+     * @param imageUrl
+     * @return
+     */
+    private Bitmap downloadImage(String imageUrl) {
+        Bitmap bitmap = null;
+        try {
+            bitmap = BitmapFactory.decodeStream((InputStream) new URL(imageUrl).getContent());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return bitmap;
+    }
+
+}
+</code></pre><h4 id="AsyncTask_u7684_u542F_u52A8_u6267_u884C"><a href="#AsyncTask_u7684_u542F_u52A8_u6267_u884C" class="headerlink" title="AsyncTask的启动执行"></a>AsyncTask的启动执行</h4><p>启动一个任务，注意每个AsyncTask只能执行一次，否则会报错。</p>
+<pre><code>mButton.setOnClickListener(new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (!hasExecuted &amp;&amp; mImageDownloadTask.getStatus() != AsyncTask.Status.RUNNING) {
+                mImageDownloadTask.execute(IMAGE_URLS);
+                hasExecuted = true;
+            } else {
+                Toast.makeText(MainActivity.this, &quot;下载已完成，且每个Task只能执行一次&quot;, Toast.LENGTH_SHORT).show();
+            }
+        }
+    });
+</code></pre>
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/23/Android应用程序的生命周期/" itemprop="url">
                   Android应用程序的生命周期
                 </a>
@@ -1444,7 +1743,7 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">9</span>
+              <span class="site-state-item-count">10</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1458,7 +1757,7 @@
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">19</span>
+              <span class="site-state-item-count">20</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
