@@ -220,6 +220,172 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/25/Android文件存储/" itemprop="url">
+                  Android文件存储
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-25T21:36:49+08:00" content="2016-06-25">
+              2016-06-25
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/06/25/Android文件存储/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/25/Android文件存储/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <p>本文最初于2015-08-14发布于个人<a href="http://blog.csdn.net/ahence/article/details/47659263" target="_blank" rel="external">CSDN博客</a>。</p>
+<p>Android文件系统跟其他平台基于磁盘的文件系统类似，这篇教程描述了如何使用文件相关的API在Android文件系统上进行读写操作。</p>
+<p>File对象适合读写大量的流式数据，如图片文件或其他文件的网络传输。</p>
+<p>这篇教程将演示如何在App中执行基本的文件操作，并假设读者对Linux文件系统和Java标准的文件输入输出有一定基础。</p>
+<h4 id="u9009_u62E9_u5185_u90E8_u5B58_u50A8_u8FD8_u662F_u5916_u90E8_u5B58_u50A8"><a href="#u9009_u62E9_u5185_u90E8_u5B58_u50A8_u8FD8_u662F_u5916_u90E8_u5B58_u50A8" class="headerlink" title="选择内部存储还是外部存储"></a>选择内部存储还是外部存储</h4><p>所有的Android设备都将文件存储区域分为两部分：内部存储和外部存储。这种命名来源于早期的Android系统，当时大部分的设备都有一个内置的不可变的内存（内部存储），另外还有一个可移除的存储介质，如SD卡（外部存储），后来即使设备没有可移除的存储介质了，依然习惯性地将永久存储空间划分为“内部”和“外部”，并且无论外部存储是否可以移除，这两部分存储空间的API行为都是一样的。下面分别总结每个存储空间的特点：</p>
+<h4 id="u5185_u90E8_u5B58_u50A8"><a href="#u5185_u90E8_u5B58_u50A8" class="headerlink" title="内部存储"></a>内部存储</h4><ol>
+<li>总是可用的</li>
+<li>内部存储空间内的文件默认只有你的App可以访问</li>
+<li>当用户卸载了你的App，系统从内部存储空间中移除所有你的App相关的文件</li>
+</ol>
+<p>当你希望用户和其他App都不能访问你的文件时，内部存储是最好的选择。</p>
+<h4 id="u5916_u90E8_u5B58_u50A8"><a href="#u5916_u90E8_u5B58_u50A8" class="headerlink" title="外部存储"></a>外部存储</h4><ol>
+<li>并非总是可用的，因为用户可能将外部存储作为USB存储，某些情况下甚至会从设备上移除外部存储</li>
+<li>它是大家都可以访问的，存储在这里的文件可以被其他应用程序访问</li>
+<li>当用户卸载了你的App，系统仅仅会移除存储在通过 getExternalFilesDir()获取到的路径中的该App相关的文件</li>
+</ol>
+<p>当你的文件不需要访问限制，或者你想将文件分享给其他的App，或者允许用户通过电脑来访问它，那么外部存储是最好的选择。</p>
+<h4 id="Tips"><a href="#Tips" class="headerlink" title="Tips"></a>Tips</h4><p>尽管App默认是被安装到内部存储空间中，但是你可以通过在AndroidManifest中指定android:installLocation属性来使App安装到外部存储空间。当APK文件很大且外部空间比内部空间大时，用户或许会喜欢这样做。如需要了解更多信息，请参考<a href="http://developer.android.com/guide/topics/data/install-location.html" target="_blank" rel="external">App InstallLocation</a>。</p>
+<h4 id="u83B7_u53D6_u5916_u90E8_u5B58_u50A8_u7684_u6743_u9650"><a href="#u83B7_u53D6_u5916_u90E8_u5B58_u50A8_u7684_u6743_u9650" class="headerlink" title="获取外部存储的权限"></a>获取外部存储的权限</h4><p>为了在外部存储空间中写入数据，需要在AndroidManifest文件中加入权限：WRITE_EXTERNAL_STORAGE，如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">manifest</span> <span class="attribute">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.WRITE_EXTERNAL_STORAGE"</span> /&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：现在应用将获得读取外部存储空间的能力而不需要提供特别的权限，然而，这在以后的版本中可能会改变。如果应用需要读外部存储（但是不需要写），那么需要声明READ_EXTERNAL_STORAGE权限。在这个改变发生之前，为了保证应用能持续地按所期待地工作，那么最好现在就声明读权限，如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">manifest</span> <span class="attribute">...</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">uses-permission</span> <span class="attribute">android:name</span>=<span class="value">"android.permission.READ_EXTERNAL_STORAGE"</span> /&gt;</span></span><br><span class="line">    ...</span><br><span class="line"><span class="tag">&lt;/<span class="title">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>但是，如果应用声明了WRITE_EXTERNAL_STORAGE权限，那么它就默认有了读取外部存储空间的权限。</p>
+<p>如果想保存文件到内部存储空间，则不需要声明任何权限。因为应用本身就有权限对内部存储空间进行读写。</p>
+<h4 id="u4FDD_u5B58_u6587_u4EF6_u5230_u5185_u90E8_u5B58_u50A8_u7A7A_u95F4"><a href="#u4FDD_u5B58_u6587_u4EF6_u5230_u5185_u90E8_u5B58_u50A8_u7A7A_u95F4" class="headerlink" title="保存文件到内部存储空间"></a>保存文件到内部存储空间</h4><p>当保存一个文件到内部存储空间时，可以通过下面任一个方法来获得一个合适的目录作为File：</p>
+<p><code>getFilesDir()</code></p>
+<p>为你的应用返回一个代表内部目录的File对象。</p>
+<p><code>getCacheDir()</code></p>
+<p>为你的应用返回一个代表内部临时缓存文件目录的File对象。需要对该文件目录设置一个合理的大小，如1M，并且确保在不需要的时候删除里面的文件。如果系统存储空间不足时，可能会在没有警告的条件下删除缓存的文件。</p>
+<p>如果要在内部存储目录下创建一个文件，可以使用File()构造函数，传入使用上述两个方法之一获取的File对象，它指定了内部存储的路径。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">File file = <span class="keyword">new</span> File(context.getFilesDir(), filename);</span><br></pre></td></tr></table></figure>
+<p>或者，可以调用openFileOutput()来获取一个FileOutputStream来写入内部存储路径下的某个文件，下面的例子说明了如何将一些文本写入文件：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">String filename = <span class="string">"myfile"</span>;</span><br><span class="line">String string = <span class="string">"Hello world!"</span>;</span><br><span class="line">FileOutputStream outputStream;</span><br><span class="line"></span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">  outputStream = openFileOutput(filename, Context.MODE_PRIVATE);</span><br><span class="line">  outputStream.write(string.getBytes());</span><br><span class="line">  outputStream.close();</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">  e.printStackTrace();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>或者，如果需要缓存一些文件，应该使用createTempFile()。例如下面的示例从一个URL中提取出文件名，然后在应用的内部缓存目录创建了一个以该文件名命名的文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> File <span class="title">getTempFile</span><span class="params">(Context context, String url)</span> </span>&#123;</span><br><span class="line">    File file;</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        String fileName = Uri.parse(url).getLastPathSegment();</span><br><span class="line">        file = File.createTempFile(fileName, <span class="keyword">null</span>, context.getCacheDir());</span><br><span class="line">    <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">        <span class="comment">// Error while creating file</span></span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> file;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：App的内部存储目录位于Android文件系统中通过应用包名决定的特定位置，从技术上讲，如果你的文件设置为可读，其他应用可以读取你的内部文件，但是其他应用需要知道你应用的包名和文件名。如果你的文件没有设置为可读，那么其他应用是不能访问该App的内部目录并读写你的文件的。因为只要使用了MODE_PRIVATE模式，其他应用就不能访问。</p>
+<h4 id="u4FDD_u5B58_u6587_u4EF6_u5230_u5916_u90E8_u5B58_u50A8"><a href="#u4FDD_u5B58_u6587_u4EF6_u5230_u5916_u90E8_u5B58_u50A8" class="headerlink" title="保存文件到外部存储"></a>保存文件到外部存储</h4><p>因为外部存储空间有时是不可用的，比如将外部存储空间连接到PC或者SD卡被移除的时候，所以应该在访问它的时候检查它的可用性。通常可以使用getExternalStorgeState()来查询外部存储空间的状态，如果状态为MEDIA_MOUNTED，那么就可以读写文件。下面是检查外部存储空间是否可用的有效方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/* Checks if external storage is available for read and write */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isExternalStorageWritable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String state = Environment.getExternalStorageState();</span><br><span class="line">    <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(state)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/* Checks if external storage is available to at least read */</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">isExternalStorageReadable</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    String state = Environment.getExternalStorageState();</span><br><span class="line">    <span class="keyword">if</span> (Environment.MEDIA_MOUNTED.equals(state) ||</span><br><span class="line">        Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) &#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>尽管外部存储可以被用户和其他应用访问修改，有两种类型的文件可以保存在这里：</p>
+<p>Public files</p>
+<p>这类文件对于用户或其他应用都是可访问的，当用户卸载了你的App时，这些文件依然保留并可被用户访问。例如，你的App所拍摄的照片或下载的文件。</p>
+<p>Private files</p>
+<p>这类文件仅属于你的App,并且会随着App的卸载而被删除。因为这些文件存储在外部，因此在技术上这些文件是可以被用户和其他应用访问的，但这对于你的App之外的用户是没有什么价值的。当用户卸载掉App时，系统会删除该App所属的外部私有目录下的所有文件。例如App下载的额外资源文件或临时性的多媒体文件。</p>
+<p>如果想在外部存储空间上保存公有文件，可以使用getExternalStoragePublicDirectory()方法来获取一个代表外部空间合适目录的File对象。这个方法需要一个参数来指定你所保存文件的类型，以便于跟其他公有文件分类。该参数类型有DIRECTORY_MUSIC或DIRECTORY_PICTURES等。例如：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> File <span class="title">getAlbumStorageDir</span><span class="params">(String albumName)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Get the directory for the user's public pictures directory. </span></span><br><span class="line">    File file = <span class="keyword">new</span> File(Environment.getExternalStoragePublicDirectory(</span><br><span class="line">            Environment.DIRECTORY_PICTURES), albumName);</span><br><span class="line">    <span class="keyword">if</span> (!file.mkdirs()) &#123;</span><br><span class="line">        Log.e(LOG_TAG, <span class="string">"Directory not created"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> file;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果想保存对于App私有的文件，可以调用getExternalFilesDir()来获取合适的文件目录，并传入一个指定文件类型的参数。通过这种方式创建的目录都会被添加到封装了该App所有外部存储文件的目录下，并且会在用户卸载App时被系统删除。下面例子可以用来创建一个个人相册的目录：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> File <span class="title">getAlbumStorageDir</span><span class="params">(Context context, String albumName)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// Get the directory for the app's private pictures directory. </span></span><br><span class="line">    File file = <span class="keyword">new</span> File(context.getExternalFilesDir(</span><br><span class="line">            Environment.DIRECTORY_PICTURES), albumName);</span><br><span class="line">    <span class="keyword">if</span> (!file.mkdirs()) &#123;</span><br><span class="line">        Log.e(LOG_TAG, <span class="string">"Directory not created"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="keyword">return</span> file;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果预定义的子目录并不适合存放我们的文件，可以调用getExternalFilesDir()并传入null，它会返回外部存储空间上该App的私有目录的根目录。</p>
+<p>请记住，通过getExternalFilesDir()方法创建的目录会随着App的卸载被删除。如果想在App被卸载后仍然可以使用这些文件，比如一个拍照的App，我们想在卸载后依然保存照片，那么就应该使用getExternalStoragePublicDirectory()。</p>
+<p>无论是使用getExternalStoragePublicDirectory()来保存共享文件还是使用getExternalFilesDir()保存App私有的文件，重要的是尽可能使用API常量提供的目录名称，如DIRECTORY_PICTURES，这些目录名称能保证系统正确地对待里面的文件。例如，以DIRECTORY_RINGTONES类型存储的文件会被系统识别为铃声而不是音乐。</p>
+<h4 id="u67E5_u8BE2_u5269_u4F59_u7A7A_u95F4"><a href="#u67E5_u8BE2_u5269_u4F59_u7A7A_u95F4" class="headerlink" title="查询剩余空间"></a>查询剩余空间</h4><p>如果你事先知道要保存的文件的大小，可以通过调用getFreeSpace()或getTotalSpace()来判断是否有足够的空间，从而避免发生IOException。这些方法可以获得当前可用的空间以及总容量的大小，这些信息对于在一定阈值以上的存储空间上存储文件是很有用的。</p>
+<p>然而，系统并不能保证可以写入getFreeSpace()大小的文件，如果剩余空间比你想要存储的文件大几M，或者存储空间使用还不到90%，那么继续存储文件一般是安全的，否则最好不要再写入文件。</p>
+<p><strong>注意</strong>：其实并非强制在保存文件之前一定要对剩余空间进行查询。你可以直接尝试写入文件，然后捕捉IOException，如果你事先不知道到底需要多少存储空间的时候可以这样做。例如，当你把PNG图片转换为JPEG时，事先并不知道生成的图片大小是多少。</p>
+<h4 id="u5220_u9664_u6587_u4EF6"><a href="#u5220_u9664_u6587_u4EF6" class="headerlink" title="删除文件"></a>删除文件</h4><p>你应该在不再需要的时候删除文件，最直接的方法是通过调用文件的delete()方法。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myFile.delete();</span><br></pre></td></tr></table></figure>
+<p>如果文件是保存在内部存储空间上的，还可以调用Context的deleteFile()方法来定位和删除文件。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">myContext.deleteFile(fileName);</span><br></pre></td></tr></table></figure>
+<p><strong>注意</strong>：当用户卸载了App，Android系统会删除如下文件：</p>
+<ol>
+<li>所有保存在内部存储空间的文件</li>
+<li>所有保存在通过getExternalFilesDir()获取的外部存储空间目录的文件</li>
+</ol>
+<p>然而，你应该定期地删除所有通过getCacheDir()创建的缓存文件以及那些不再使用的文件。</p>
+<p><a href="http://developer.android.com/training/basics/data-storage/files.html" target="_blank" rel="external">原文地址</a></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/23/巧用AsyncTask的onProgressUpdate回调/" itemprop="url">
                   巧用AsyncTask的onProgressUpdate回调
                 </a>
@@ -1579,132 +1745,14 @@ private static class ImageDownloadTask extends AsyncTask&lt;String, Bitmap, Void
 
 
     
-      
-
-  
-  
-
-  
-  
-  
-
-  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
-
-    
-      <header class="post-header">
-
-        
-        
-          <h1 class="post-title" itemprop="name headline">
-            
-            
-              
-                
-                <a class="post-title-link" href="/2016/01/06/贺新郎.读史/" itemprop="url">
-                  贺新郎.读史
-                </a>
-              
-            
-          </h1>
-        
-
-        <div class="post-meta">
-          <span class="post-time">
-            发表于
-            <time itemprop="dateCreated" datetime="2016-01-06T13:37:15+08:00" content="2016-01-06">
-              2016-01-06
-            </time>
-          </span>
-
-          
-            <span class="post-category" >
-              &nbsp; | &nbsp; 分类于
-              
-                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
-                  <a href="/categories/杂谈/" itemprop="url" rel="index">
-                    <span itemprop="name">杂谈</span>
-                  </a>
-                </span>
-
-                
-                
-
-              
-            </span>
-          
-
-          
-            
-              <span class="post-comments-count">
-              &nbsp; | &nbsp;
-              <a href="/2016/01/06/贺新郎.读史/#comments" itemprop="discussionUrl">
-                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/01/06/贺新郎.读史/" itemprop="commentsCount"></span>
-              </a>
-            </span>
-            
-          
-
-          
-
-        </div>
-      </header>
-    
-
-
-    <div class="post-body">
-
-      
-      
-
-      
-        
-          <span itemprop="articleBody">
-            
-              <p>人猿相揖别。</p>
-<p>只几个石头磨过，</p>
-<p>小儿时节。</p>
-<p>铜铁炉中翻火焰，</p>
-<p>为问何时猜得？</p>
-<p>不过几千寒热。</p>
-<p>人世难逢开口笑，</p>
-<p>上疆场彼此弯弓月。</p>
-<p>流遍了，</p>
-<p>郊原血。</p>
-<p>一篇读罢头飞雪，</p>
-<p>但记得斑斑点点，</p>
-<p>几行陈迹。</p>
-<p>五帝三皇神圣事，</p>
-<p>骗了无涯过客。</p>
-<p>有多少风流人物？</p>
-<p>盗跖庄蹻流誉后，</p>
-<p>更陈王奋起挥黄钺。</p>
-<p>歌未竟，</p>
-<p>东方白。</p>
-
-            
-          </span>
-        
-      
-    </div>
-
-    <footer class="post-footer">
-      
-
-      
-
-      
-      
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-
-
-    
 
   </section>
 
   
+  <nav class="pagination">
+    <span class="page-number current">1</span><a class="page-number" href="/page/2/">2</a><a class="extend next" rel="next" href="/page/2/"><i class="fa fa-angle-right"></i></a>
+  </nav>
+
 
 
         </div>
@@ -1743,7 +1791,7 @@ private static class ImageDownloadTask extends AsyncTask&lt;String, Bitmap, Void
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">10</span>
+              <span class="site-state-item-count">11</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -1757,7 +1805,7 @@ private static class ImageDownloadTask extends AsyncTask&lt;String, Bitmap, Void
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">20</span>
+              <span class="site-state-item-count">23</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
