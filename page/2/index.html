@@ -220,6 +220,136 @@
             
               
                 
+                <a class="post-title-link" href="/2016/06/18/activity-alias详解及应用/" itemprop="url">
+                  activity-alias详解及应用
+                </a>
+              
+            
+          </h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            发表于
+            <time itemprop="dateCreated" datetime="2016-06-18T21:30:54+08:00" content="2016-06-18">
+              2016-06-18
+            </time>
+          </span>
+
+          
+            <span class="post-category" >
+              &nbsp; | &nbsp; 分类于
+              
+                <span itemprop="about" itemscope itemtype="https://schema.org/Thing">
+                  <a href="/categories/Android/" itemprop="url" rel="index">
+                    <span itemprop="name">Android</span>
+                  </a>
+                </span>
+
+                
+                
+
+              
+            </span>
+          
+
+          
+            
+              <span class="post-comments-count">
+              &nbsp; | &nbsp;
+              <a href="/2016/06/18/activity-alias详解及应用/#comments" itemprop="discussionUrl">
+                <span class="post-comments-count disqus-comment-count" data-disqus-identifier="2016/06/18/activity-alias详解及应用/" itemprop="commentsCount"></span>
+              </a>
+            </span>
+            
+          
+
+          
+
+        </div>
+      </header>
+    
+
+
+    <div class="post-body">
+
+      
+      
+
+      
+        
+          <span itemprop="articleBody">
+            
+              <h3 id="activity-alias_u6807_u7B7E_u5143_u7D20"><a href="#activity-alias_u6807_u7B7E_u5143_u7D20" class="headerlink" title="activity-alias标签元素"></a>activity-alias标签元素</h3><p>众所周知，AndroidManifest是一个xml文件，它包含很多标签元素，如application、activity、receiver等，其中有一个叫做activity-alias，因为该标签平时很少用到，可能大家对这个标签还不是很熟悉。</p>
+<p>activity-alias，顾名思义，即activity的别名。看到这里，大家会想那它究竟是哪个Activity的别名呢？我们在创建一个Activity时，必须在AndroidManifest中静态声明该Activity，同时配置android:name、android:label、android:icon等属性，还可配置intent-filter。对于activity-alias标签，它有一个属性叫android:targentActivity，这个属性就是用来为该标签设置目标Activity的，或者说它就是这个目标Activity的别名。至此我们已经明白activity-alias并非代表一个独立的Activity，而是为一个已经存在的Activity创建的别名。</p>
+<h3 id="activity-alias_u529F_u80FD"><a href="#activity-alias_u529F_u80FD" class="headerlink" title="activity-alias功能"></a>activity-alias功能</h3><p>知道了activity-alias的概念，那么它的功能是什么呢？activity-alias作为一个已存在Activity的别名，则应该可以通过该别名标签声明快速打开目标Activity。因此activity-alias可用来设置某个Activity的快捷入口，可以放在桌面上或者通过该别名被其他组件快速调起。该标签元素支持一些属性及intent-filter、meta-data等配置，因此可以触发一些跟目标Activity不同的功能逻辑，虽然打开的是同一个Activity。举个简单的例子，如之前需要先打开主界面，然后才能点击进入某个Activity，如果使用activity-alias为该Activity配置一个快捷入口，甚至可以为其在桌面生成一个图标，然后点击桌面图标可直接进入该Activity，该功能可满足某些需要快速到达功能界面的需求。</p>
+<h3 id="activity-alias_u8BED_u6CD5_u53CA_u58F0_u660E"><a href="#activity-alias_u8BED_u6CD5_u53CA_u58F0_u660E" class="headerlink" title="activity-alias语法及声明"></a>activity-alias语法及声明</h3><p>其基本语法如下</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">activity-alias</span> <span class="attribute">android:enabled</span>=<span class="value">["true"</span> | "<span class="attribute">false</span>"]</span><br><span class="line">                <span class="attribute">android:exported</span>=<span class="value">["true"</span> | "<span class="attribute">false</span>"]</span><br><span class="line">                <span class="attribute">android:icon</span>=<span class="value">"drawable resource"</span></span><br><span class="line">                <span class="attribute">android:label</span>=<span class="value">"string resource"</span></span><br><span class="line">                <span class="attribute">android:name</span>=<span class="value">"string"</span></span><br><span class="line">                <span class="attribute">android:permission</span>=<span class="value">"string"</span></span><br><span class="line">                <span class="attribute">android:targetActivity</span>=<span class="value">"string"</span> &gt;</span></span><br><span class="line">    . . .</span><br><span class="line"><span class="tag">&lt;/<span class="title">activity-alias</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>部分属性说明如下</p>
+<ol>
+<li>android:enable  该属性用来决定目标Activity可否通过别名被系统实例化，默认为true。需要注意的是application也有enable属性，只用当它们同时为true时，activity-alias的enable才生效。</li>
+<li>android:exported  该属性为true的话，则目标Activity可被其他应用调起，如为false则只能被应用自身调起。其默认值根据activity-alias是否包含intent-filter元素决定，如果有的话，则默认为true；没有的话则为false。其实也很好理解，如果有intent-filter，则目标Activity可以匹配隐式Intent，因此可被外部应用唤起；如果没有intent-filter，则目标Activity要被调起的话必须知道其精确类名，因为只有应用本身才知道精确类名，所以此时默认为false。</li>
+<li>android:icon  该属性就比较好玩了，允许自定义icon，可以不同于应用本身在桌面的icon。如果需要在桌面上创建快捷入口，也许产品会要求换个不同的icon。</li>
+<li>android:label  该属性类似于android:icon，图标都换了，换个名称也合情合理吧，此属性就是为此而生的。</li>
+<li>android:name  该属性可以为任意字符串，但最好符合类名命名规范。activity元素的name属性实质上都会指向一个具体的Activity类，而activity-alias的name属性仅作为一个唯一标识而已。</li>
+<li>android:permission  该属性指明了通过别名声明调起目标Activity所必需的权限。</li>
+<li>android:targetActivity  该属性指定了目标Activity，即通过activity-alias调起的Activity是哪个，此属性其实类似于activity标签中的name属性，需要规范的Activity包名类名。</li>
+</ol>
+<p>看了以上几个主要属性，大家应该意识到activity-alias的属性是activity属性的子集，如果是activity-alias和activity共有的属性，则以activity-alias为准，目标Activity中的设置并不会在activity-alias中生效；如果是仅activity才有的属性，则为目标Activity配置的属性会在activity-alias中生效。</p>
+<p>activity-alias可以设置自己的intent-filter或meta-date，最常用的就是设置如下intent-filter从而在桌面Launcher上创建一个快捷入口：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>另外需要注意的一点是，在AndroidManifest配置文件中，activity-alias标签元素必须声明在目标Acitvity对应的activity标签元素之后，否则会编译错误。</p>
+<h3 id="activity-alias_u7528_u6CD5_u793A_u4F8B"><a href="#activity-alias_u7528_u6CD5_u793A_u4F8B" class="headerlink" title="activity-alias用法示例"></a>activity-alias用法示例</h3><p>到此大家已经对activity-alias了解的比较深入了，来看一个activity-alias的经典用法：为某个Activity在桌面创建一个快捷入口。</p>
+<p>代码很简单，应用包含两个Activity：MainActivity和SecondActivity，MainActivity有一个Button，点击跳转到SecondActivity；我们为SecondActivity配置一个activity-alias标签元素，在桌面上为其创建一个快捷入口，点击可以直接打开SecondActivity。</p>
+<p>该示例应用的AndroidManifest.xml内容如下：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br></pre></td><td class="code"><pre><span class="line"><span class="pi">&lt;?xml version="1.0" encoding="utf-8"?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="title">manifest</span> <span class="attribute">xmlns:android</span>=<span class="value">"http://schemas.android.com/apk/res/android"</span></span><br><span class="line">    <span class="attribute">package</span>=<span class="value">"me.geed.activityalias"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="title">application</span></span><br><span class="line">        <span class="attribute">android:allowBackup</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">android:icon</span>=<span class="value">"@mipmap/ic_launcher"</span></span><br><span class="line">        <span class="attribute">android:label</span>=<span class="value">"@string/app_name"</span></span><br><span class="line">        <span class="attribute">android:supportsRtl</span>=<span class="value">"true"</span></span><br><span class="line">        <span class="attribute">android:theme</span>=<span class="value">"@style/AppTheme"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">activity</span> <span class="attribute">android:name</span>=<span class="value">".MainActivity"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line"></span><br><span class="line">                <span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">activity</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="title">activity</span> <span class="attribute">android:name</span>=<span class="value">".SecondActivity"</span>&gt;</span><span class="tag">&lt;/<span class="title">activity</span>&gt;</span></span><br><span class="line"></span><br><span class="line">        <span class="tag">&lt;<span class="title">activity-alias</span></span><br><span class="line">            <span class="attribute">android:name</span>=<span class="value">"SecondActivityAlias"</span></span><br><span class="line">            <span class="attribute">android:label</span>=<span class="value">"Alias快捷入口"</span></span><br><span class="line">            <span class="attribute">android:targetActivity</span>=<span class="value">".SecondActivity"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">action</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.action.MAIN"</span> /&gt;</span></span><br><span class="line">                <span class="tag">&lt;<span class="title">category</span> <span class="attribute">android:name</span>=<span class="value">"android.intent.category.LAUNCHER"</span> /&gt;</span></span><br><span class="line">            <span class="tag">&lt;/<span class="title">intent-filter</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="title">activity-alias</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="title">application</span>&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="title">manifest</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>将应用部署到手机上，你会发现生成了两个桌面图标（此处由于没有为activity-alias另指定icon，因此两者icon相同），名称分别为“ActivityAlias”和“Alias快捷入口”。</p>
+<p>点击“ActivityAlias”应用图标，会启动MainActivity，在MainActivity中点击Button，跳转到SecondActivity。</p>
+<p>点击“Alias快捷入口”图标，则可以直接打开SecondActivity，且SecondActivity的title为我们在activity-alias中设置的 label属性名称。</p>
+<p>具体效果如下图：</p>
+<p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/activity-alias.gif" alt="activity-alias"></p>
+
+            
+          </span>
+        
+      
+    </div>
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+
+
+    
+      
+
+  
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal " itemscope itemtype="http://schema.org/Article">
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+            
+            
+              
+                
                 <a class="post-title-link" href="/2016/06/18/Geed/" itemprop="url">
                   Geed
                 </a>
@@ -587,21 +717,21 @@
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">13</span>
+              <span class="site-state-item-count">14</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
 
           <div class="site-state-item site-state-categories">
             <a href="/categories">
-              <span class="site-state-item-count">5</span>
+              <span class="site-state-item-count">6</span>
               <span class="site-state-item-name">分类</span>
               </a>
           </div>
 
           <div class="site-state-item site-state-tags">
             <a href="/tags">
-              <span class="site-state-item-count">26</span>
+              <span class="site-state-item-count">27</span>
               <span class="site-state-item-name">标签</span>
               </a>
           </div>
