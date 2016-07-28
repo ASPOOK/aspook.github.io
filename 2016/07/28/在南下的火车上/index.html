@@ -1,22 +1,27 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="请不要灰心，你也会有人妒忌"><title>Android广播纪要 | Aspook</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.1.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Android广播纪要</h1><a id="logo" href="/.">Aspook</a><p class="description">『Serendipity』Battling against our own ignorance</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Android广播纪要</h1><div class="post-meta">Jun 20, 2016<span> | </span><span class="category"><a href="/categories/Android/">Android</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2016/06/20/Android广播纪要/" href="/2016/06/20/Android广播纪要/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><p>Android广播机制是一种组件间传递消息的方式，支持同一进程及跨进程通信，底层实现基于Binder。</p>
-<p>广播机制是一种基于消息发布和订阅的事件驱动模型，因此需要注册广播接收者即Broadcast Receiver，注册方式分为静态注册（在Manifest文件中配置）与动态注册（在Activity或Service里代码实现），同等条件下，动态注册的广播接收者比静态注册的优先接收到广播。</p>
-<p>广播接收者被注册到ActivityManagerService中，注册的同时指明了接收广播的类型，还可以指定优先级。当广播发生时，ActivityManagerService会将对应的广播发送到对应的接收者。实际上，Activity组件在注册一个广播接收者时，并非真的将这个广播接收者注册到ActivityManagerService中，而是将与它关联的一个InnerReceiver对象注册到ActivityManagerService中。当ActivityManagerService收到一个广播时，它就会根据这个广播的类型在内部找到对应的InnerReceiver对象，然后再通过InnerReceiver对象将这个广播发送给对应的广播接收者处理。</p>
-<p>广播发送方式分为有序广播和无序广播。当ActivityManagerService收到有序广播时，会将该广播优先发给符合接收条件且优先级高的接收者来处理，然后再发送给符合接收条件但优先级低的接收者来处理。对于无序广播，ActivityManagerService会忽略接收者的优先级，将该广播发给所有符合接收条件的接收者处理。</p>
-<p>当一个粘性（Sticky）广播被发送到ActivityManagerService后，就会一直保存在ActivityManagerService中，直到ActivityManagerService下次再接收到另外一个同类型的粘性广播为止。一个Activity组件在向ActivityManagerService注册接收某一种类型的广播时，如果ActivityManagerService内部恰好有这种类型的粘性广播，那么ActivityManagerService就会将这个粘性广播返回给该Activity组件，以便它可以知道系统上次发出的它所感兴趣的广播内容。可以通过调用sendStickyBroadcast向ActivityManagerService发送一个粘性广播。</p>
-<p>广播是使用一个Intent对象来描述的，而这个Intent对象的Action名称就是用来描述它所对应的广播的类型。</p>
-<p>广播的发送过程：</p>
-<ol>
-<li>广播发送者，如Activity或Service组件，将一个特定类型的广播发送给ActivityManagerService。</li>
-<li>ActivityManagerService接收到一个广播之后，首先找到与这个广播对应的接收者，然后将它们添加到一个广播调度队列中，最后向ActivityManagerService所运行的线程的消息队列发送一个类型为BROADCAST_INTENT_MSG的消息，这时候对于广播发送者来说，一个广播就发送完成了。</li>
-<li>当发送到ActivityManagerService所运行线程的消息队列中的BROADCAST_INTENT_MSG消息被处理时，ActivityManagerService就会从广播调度队列中找到需要接收广播的接收者，并且将对应的广播发送给它们所运行在的应用程序进程。</li>
-<li>广播接收者所运行在的应用程序进程接收到ActivityManagerService发送的广播之后，并非直接将收到的广播分发给广播接收者来处理，而是将接收到的广播封装成一个消息，并且发送到主线程的消息队列中。当这个消息被处理时，应用程序进程才会将它所描述的广播发送给相应的广播接收者处理。</li>
-</ol>
-<p>本文最初于2016-06-03发布于个人<a href="http://blog.csdn.net/ahence/article/details/51578853" target="_blank" rel="external">CSDN博客</a>。</p>
-<p><em>参考文献《Android系统源代码情景分析》</em></p>
-</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/06/20/Android广播纪要/" data-id="cir67g69j0046rv5swzynvz9t" class="article-share-link">分享到</a><div class="tags"><a href="/tags/Android广播/">Android广播</a><a href="/tags/Broadcast/">Broadcast</a></div><div class="post-nav"><a href="/2016/06/21/由一篇知乎问答引发的Web地图探索/" class="pre">由一篇知乎问答引发的Web地图探索</a><a href="/2016/06/20/Android-Studio-Instant-Run的工作原理/" class="next">Android Studio Instant Run的工作原理</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
-var disqus_identifier = '2016/06/20/Android广播纪要/';
-var disqus_title = 'Android广播纪要';
-var disqus_url = 'http://aspook.com/2016/06/20/Android广播纪要/';
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="请不要灰心，你也会有人妒忌"><title>在南下的火车上 | Aspook</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.1.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">在南下的火车上</h1><a id="logo" href="/.">Aspook</a><p class="description">『Serendipity』Battling against our own ignorance</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">在南下的火车上</h1><div class="post-meta">Jul 28, 2016<span> | </span><span class="category"><a href="/categories/杂谈/">杂谈</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2016/07/28/在南下的火车上/" href="/2016/07/28/在南下的火车上/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><p>很久没坐这么长时间的火车了，从沈阳到上海的高铁需要10个半小时。高铁的环境跟多年前拥挤的火车比起来好了太多，因此可以在列车上好好思考。</p>
+<p>大概9年前刚上大二坐火车去大学，当时写过一篇文字叫《南下的忧伤》，其中有几句是这样的：</p>
+<blockquote>
+<p>突然想哭，可是在拥挤的火车上，我的泪始终没有掉下来。</p>
+<p>我像一只被邮寄的包裹，从石家庄到北京，从北京到九江，从九江到赣州，我漂泊在各个城市之间。</p>
+</blockquote>
+<p>写了《南下的忧伤》大概一两年后，再次看到时又补了如下几句：</p>
+<blockquote>
+<p>后记：今日整理笔记，看到自己的这篇文章，觉得挺好笑的，时过境迁，或许当时只是不愿离开家吧。今日看来，再没什么难过，因为我在为梦而奔波。人的一生本就写满了流浪，这才叫生活。</p>
+</blockquote>
+<p>是这样的，也许刚上大学那会儿还比较迷茫，不知道梦想究竟在哪里。离开家到千里之外的地方去求学，难免有些难过与失落。</p>
+<p>这次因为刚好还有一天假可休，所以故意选择了火车。从沈阳到上海，每到一个站点，看到高铁车厢里的室外温度提示：盘锦27°C、秦皇岛30°C、天津32°C、济南34°C、徐州36°C、南京36°C……不断升高的外部温度告诉我离目的地越来越近。</p>
+<p>但此时的心情是豁然开朗的，没有了若干年前的失落与忧郁，因为我已经不在流浪，把家安在了上海，所以人生也有了方向，可能此次唯一遗憾的就是没能回石家庄看看父母。</p>
+<p>一路上看农田与村落。</p>
+<p>一路上看城市与车站。</p>
+<p>一路上看河流与湖泊。</p>
+<p>一路上看平原与山岗。</p>
+<p>一路上想了很多人。</p>
+<p>一路上想了很多事。</p>
+<p>突然很珍惜南下火车上的这段时光。</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/07/28/在南下的火车上/" data-id="cir67g68k001zrv5scdcuuh9f" class="article-share-link">分享到</a><div class="tags"><a href="/tags/在南下的火车上/">在南下的火车上</a></div><div class="post-nav"><a href="/2016/07/20/深入理解Java泛型/" class="next">深入理解Java泛型</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
+var disqus_identifier = '2016/07/28/在南下的火车上/';
+var disqus_title = '在南下的火车上';
+var disqus_url = 'http://aspook.com/2016/07/28/在南下的火车上/';
 (function() {
   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
