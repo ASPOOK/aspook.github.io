@@ -1,30 +1,19 @@
-<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="请不要灰心，你也会有人妒忌"><title>Android进程间通信纪要 | Aspook</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.1.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Android进程间通信纪要</h1><a id="logo" href="/.">Aspook</a><p class="description">『Serendipity』Battling against our own ignorance</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Android进程间通信纪要</h1><div class="post-meta">Jul 6, 2016<span> | </span><span class="category"><a href="/categories/Android/">Android</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2016/07/06/Android进程间通信纪要/" href="/2016/07/06/Android进程间通信纪要/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><h4 id="u8FDB_u7A0B_u95F4_u901A_u4FE1_u57FA_u7840"><a href="#u8FDB_u7A0B_u95F4_u901A_u4FE1_u57FA_u7840" class="headerlink" title="进程间通信基础"></a>进程间通信基础</h4><p>虽然Android是基于Linux的，但在Linux操作系统中的IPC技术在Android平台中被Binder Framework替代。Messenger、AIDL等进程间通信方式底层都是基于Binder的。</p>
-<p>Android中每个app都有独立的虚拟机，不同虚拟机在内存分配上有不同的地址空间，一般来说每个app都对应着一个进程，因此进程间通信不像线程间那样可以通过共享内存来实现。</p>
-<p>进程间通信传递的数据，包括传入参数与返回值都需要实现android.os.Parcelable接口。</p>
-<p>由于远程方法可能是耗时的操作，因此请务必在客户端使用工作线程去执行RPC操作。除非你很清楚远端进程的操作是怎样的。 或者UI线程发起一个异步调用，通过callback来获取返回结果。如果从服务端调客户端的远程方法，如果也是耗时操作，同样需要开子线程。</p>
-<p>Messenger机制是单线程顺序执行的，容易实现，其实质是基于AIDL的。所能传递的数据类型为Message，跟线程间使用Message机制类似，但要注意对object参数的限制。</p>
-<h4 id="u4E24_u79CD_u5E38_u7528_u7684_u5E8F_u5217_u5316_u65B9_u5F0F"><a href="#u4E24_u79CD_u5E38_u7528_u7684_u5E8F_u5217_u5316_u65B9_u5F0F" class="headerlink" title="两种常用的序列化方式"></a>两种常用的序列化方式</h4><ol>
-<li>Serializable——Java中的序列化方式，使用简单，开销较大，效率不是很高，比较适合磁盘序列化。</li>
-<li>Parcelable—— Android中的序列化方式，实现较为繁琐，效率较高，适合内存序列化，也是在Android开发中推荐使用的序列化方式。</li>
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="请不要灰心，你也会有人妒忌"><title>关于Android适配的几条定律 | Aspook</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.1.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">关于Android适配的几条定律</h1><a id="logo" href="/.">Aspook</a><p class="description">『Serendipity』Battling against our own ignorance</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">关于Android适配的几条定律</h1><div class="post-meta">Aug 16, 2016<span> | </span><span class="category"><a href="/categories/Android/">Android</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2016/08/16/关于Android适配的几条定律/" href="/2016/08/16/关于Android适配的几条定律/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><ol>
+<li><p>在Android中一旦涉及到系统版本或厂商机型的话，几乎没有一个普适的规则。</p>
+<blockquote>
+<p>例如在4.0系统上正常，在6.0系统上则不一定正常；在原生系统上正常的话，在小米系统上则不一定正常；在小米手机上正常，在三星或华为手机上则不一定正常，通常比较坑的就是小米、魅族、乐视等手机，更不用说各种品牌的山寨机对操作系统的胡乱定制了。</p>
+</blockquote>
+</li>
+<li><p>某个功能在部分测试机上正常，但不一定在所有手机上都正常，所以云测试很重要。</p>
+</li>
+<li><p>如果有用户反馈说某台手机某个功能不正常，通常来说都是对的。</p>
+</li>
 </ol>
-<h4 id="u5E38_u7528_u8FDB_u7A0B_u95F4_u901A_u4FE1_u65B9_u5F0F"><a href="#u5E38_u7528_u8FDB_u7A0B_u95F4_u901A_u4FE1_u65B9_u5F0F" class="headerlink" title="常用进程间通信方式"></a>常用进程间通信方式</h4><ol>
-<li>通过Intent在Activity、Service或BroadcastReceiver间进行进程间通信，可通过Intent传递数据</li>
-<li>AIDL方式</li>
-<li>Messenger方式</li>
-<li>利用ContentProvider</li>
-<li>Socket方式</li>
-<li>基于文件共享的方式</li>
-</ol>
-<h4 id="Binder_u8FDB_u7A0B_u95F4_u901A_u4FE1_u539F_u7406"><a href="#Binder_u8FDB_u7A0B_u95F4_u901A_u4FE1_u539F_u7406" class="headerlink" title="Binder进程间通信原理"></a>Binder进程间通信原理</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/IPC%20through%20Binder.png" alt=""></p>
-<p>上图摘自Efficient Android Threading。</p>
-<h4 id="AIDL_u8FDB_u7A0B_u95F4_u901A_u4FE1_u539F_u7406"><a href="#AIDL_u8FDB_u7A0B_u95F4_u901A_u4FE1_u539F_u7406" class="headerlink" title="AIDL进程间通信原理"></a>AIDL进程间通信原理</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/IPC%20with%20AIDL.png" alt=""></p>
-<p>上图摘自Efficient Android Threading。</p>
-<h4 id="Messenger_u8FDB_u7A0B_u95F4_u539F_u7406"><a href="#Messenger_u8FDB_u7A0B_u95F4_u539F_u7406" class="headerlink" title="Messenger进程间原理"></a>Messenger进程间原理</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/imgs/IPC%20with%20Messenger.png" alt=""></p>
-<p>上图摘自Efficient Android Threading。</p>
-</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/07/06/Android进程间通信纪要/" data-id="cirx2n4wl003b4j5ss0410wfk" class="article-share-link">分享到</a><div class="tags"><a href="/tags/AIDL/">AIDL</a><a href="/tags/Binder/">Binder</a><a href="/tags/Messenger/">Messenger</a><a href="/tags/进程间通信/">进程间通信</a></div><div class="post-nav"><a href="/2016/07/06/如何判断是否可以使用某个Intent/" class="pre">如何判断是否可以使用某个Intent</a><a href="/2016/07/05/LRU算法原理/" class="next">LRU算法原理</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
-var disqus_identifier = '2016/07/06/Android进程间通信纪要/';
-var disqus_title = 'Android进程间通信纪要';
-var disqus_url = 'http://aspook.com/2016/07/06/Android进程间通信纪要/';
+<p>都是Android碎片化（包括设备、系统、屏幕等碎片化）带给开发者的痛，不多说了，满满的都是泪啊！</p>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/08/16/关于Android适配的几条定律/" data-id="cirx2n4w300234j5sdfljuk5v" class="article-share-link">分享到</a><div class="tags"><a href="/tags/Android适配/">Android适配</a></div><div class="post-nav"><a href="/2016/08/16/Android-Window纪要/" class="next">Android Window纪要</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
+var disqus_identifier = '2016/08/16/关于Android适配的几条定律/';
+var disqus_title = '关于Android适配的几条定律';
+var disqus_url = 'http://aspook.com/2016/08/16/关于Android适配的几条定律/';
 (function() {
   var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
   dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
