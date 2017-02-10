@@ -11,7 +11,7 @@
 <p>取平均值仍然是一种概率性的事件，如果某次Minor GC后存活对象陡增，远高于平均值的话，必然导致担保失败，如果出现了分配担保失败，就只能在失败后重新发起一次Full GC。虽然存在发生这种情况的概率，但大部分时候都是能够成功分配担保的，这样就避免了过于频繁执行Full GC。</p>
 <p>在JDK 6 Update24之后，HandlePromotionFailure参数不会再影响到虚拟机的空间分配担保，规则变为只要老年代的连续空间大于新生代对象总大小或者历次晋升到老年代对象大小的平均值，就会进行Minor GC，否则就执行Full GC。</p>
 <p>参考文献《深入理解Java虚拟机》</p>
-</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/" data-id="ciyzfb34b004h3x5sqa8atxx4" class="article-share-link">分享到</a><div class="tags"><a href="/tags/Java内存分配/">Java内存分配</a></div><div class="post-nav"><a href="/2016/09/15/潜心做一名花匠/" class="pre">潜心做一名花匠</a><a href="/2016/08/28/垃圾收集器与常用垃圾收集算法/" class="next">垃圾收集器与常用垃圾收集算法</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/" data-id="ciyzfjtse004h7a5s6efstwo5" class="article-share-link">分享到</a><div class="tags"><a href="/tags/Java内存分配/">Java内存分配</a></div><div class="post-nav"><a href="/2016/09/15/潜心做一名花匠/" class="pre">潜心做一名花匠</a><a href="/2016/08/28/垃圾收集器与常用垃圾收集算法/" class="next">垃圾收集器与常用垃圾收集算法</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
 var disqus_identifier = '2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/';
 var disqus_title = 'Java内存分配策略——《深入理解Java虚拟机》笔记';
 var disqus_url = 'http://aspook.com/2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/';

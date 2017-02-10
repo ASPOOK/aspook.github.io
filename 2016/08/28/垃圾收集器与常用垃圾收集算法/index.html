@@ -37,7 +37,7 @@
 <h4 id="u5206_u4EE3_u6536_u96C6_u7B97_u6CD5"><a href="#u5206_u4EE3_u6536_u96C6_u7B97_u6CD5" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>当前虚拟机的垃圾收集都采用“分代收集”（Generational Collection）算法。算法思想是跟根据对象存活周期的不同将内存划分为几块，一般将Java堆划分为新生代和老年代，这样可以根据各个年代的特点采用最合适的垃圾收集算法。</p>
 <p>在新生代中，每次垃圾收集时都有大量对象死亡，只有少量存活，因此优选复制算法，这样只需要付出少量对象的复制成本就可以完成收集；而对于老年代，因为对象存活率高，且没有额外的空间对它进行分配担保，就更适合使用标记-清理或标记-整理算法来进行回收。</p>
 <p>参考资料《深入理解Java虚拟机》</p>
-</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/08/28/垃圾收集器与常用垃圾收集算法/" data-id="ciyzfb32y002j3x5s3qbmu33l" class="article-share-link">分享到</a><div class="tags"><a href="/tags/垃圾收集算法/">垃圾收集算法</a></div><div class="post-nav"><a href="/2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/" class="pre">Java内存分配策略——《深入理解Java虚拟机》笔记</a><a href="/2016/08/25/深入理解Java对象克隆/" class="next">深入理解Java对象克隆</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2016/08/28/垃圾收集器与常用垃圾收集算法/" data-id="ciyzfjtqs002j7a5sbsw9dq87" class="article-share-link">分享到</a><div class="tags"><a href="/tags/垃圾收集算法/">垃圾收集算法</a></div><div class="post-nav"><a href="/2016/09/08/Java内存分配策略——《深入理解Java虚拟机》笔记/" class="pre">Java内存分配策略——《深入理解Java虚拟机》笔记</a><a href="/2016/08/25/深入理解Java对象克隆/" class="next">深入理解Java对象克隆</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
 var disqus_identifier = '2016/08/28/垃圾收集器与常用垃圾收集算法/';
 var disqus_title = '垃圾收集器与常用垃圾收集算法';
 var disqus_url = 'http://aspook.com/2016/08/28/垃圾收集器与常用垃圾收集算法/';
