@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    
+<meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+<meta name="theme-color" content="#f8f5ec" />
+<meta name="msapplication-navbutton-color" content="#f8f5ec">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="#f8f5ec">
+
+
+
+  <meta name="description" content="理解Java泛型"/>
+
+
+
+
+  <meta name="keywords" content="Java泛型, ASPOOK" />
+
+
+
+
+
+
+
+
+
+
+  <link rel="alternative" href="/default" title="ASPOOK" type="application/atom+xml">
+
+
+
+
+  <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico?v=2.6.0" />
+
+
+
+<link rel="canonical" href="http://aspook.com/2016/07/20/理解Java泛型/"/>
+
+
+<link rel="stylesheet" type="text/css" href="/css/style.css?v=2.6.0" />
+
+
+
+
+
+
+  
+
+
+
+  <script id="baidu_push">
+(function(){
+    var bp = document.createElement('script');
+    var curProtocol = window.location.protocol.split(':')[0];
+    if (curProtocol === 'https') {
+        bp.src = 'https://zz.bdstatic.com/linksubmit/push.js';
+    }
+    else {
+        bp.src = 'http://push.zhanzhang.baidu.com/push.js';
+    }
+    var s = document.getElementsByTagName("script")[0];
+    s.parentNode.insertBefore(bp, s);
+})();
+</script>
+
+
+
+
+
+
+
+
+
+    <title> 理解Java泛型 - ASPOOK </title>
+  </head>
+
+  <body><div id="mobile-navbar" class="mobile-navbar">
+  <div class="mobile-header-logo">
+    <a href="/." class="logo">ASPOOK</a>
+  </div>
+  <div class="mobile-navbar-icon">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+</div>
+
+<nav id="mobile-menu" class="mobile-menu slideout-menu">
+  <ul class="mobile-menu-list">
+    
+      <a href="/">
+        <li class="mobile-menu-item">
+          
+          
+            首页
+          
+        </li>
+      </a>
+    
+      <a href="/archives/">
+        <li class="mobile-menu-item">
+          
+          
+            归档
+          
+        </li>
+      </a>
+    
+  </ul>
+</nav>
+
+    <div class="container" id="mobile-panel">
+      <header id="header" class="header"><div class="logo-wrapper">
+  <a href="/." class="logo">ASPOOK</a>
+</div>
+
+<nav class="site-navbar">
+  
+    <ul id="menu" class="menu">
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/">
+            
+            
+              首页
+            
+          </a>
+        </li>
+      
+        <li class="menu-item">
+          <a class="menu-item-link" href="/archives/">
+            
+            
+              归档
+            
+          </a>
+        </li>
+      
+    </ul>
+  
+</nav>
+
+      </header>
+
+      <main id="main" class="main">
+        <div class="content-wrapper">
+          <div id="content" class="content">
+            
+  
+  <article class="post">
+    <header class="post-header">
+      <h1 class="post-title">
+        
+          理解Java泛型
+        
+      </h1>
+
+      <div class="post-meta">
+        <span class="post-time">
+          2016-07-20
+        </span>
+        
+          <div class="post-category">
+            
+              <a href="/categories/Java/">Java</a>
+            
+          </div>
+        
+        
+      </div>
+    </header>
+
+    
+    
+  <div class="post-toc" id="post-toc">
+    <h2 class="post-toc-title">文章目录</h2>
+    <div class="post-toc-content">
+      <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CDB_u578B_u5F15_u5165"><span class="toc-text">泛型引入</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CDB_u578B_u7C7B"><span class="toc-text">泛型类</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CDB_u578B_u89C4_u5219"><span class="toc-text">泛型规则</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CDB_u578B_u65B9_u6CD5"><span class="toc-text">泛型方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CDB_u578B_u63A5_u53E3"><span class="toc-text">泛型接口</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u9650_u5236_u6CDB_u578B"><span class="toc-text">限制泛型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u901A_u914D_u7B26_u6CDB_u578B"><span class="toc-text">通配符泛型</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#u6CE8_u610F"><span class="toc-text">注意</span></a></li></ol>
+    </div>
+  </div>
+
+
+    <div class="post-content">
+      
+        <h4 id="u6CDB_u578B_u5F15_u5165"><a href="#u6CDB_u578B_u5F15_u5165" class="headerlink" title="泛型引入"></a>泛型引入</h4><p>Java是一种强类型的语言，定义一个变量时需要指明其类型。Object是所有类的基类，在Java 1.5之前，为了让类具有通用性，通常使用Object来实现参数的任意化，如将String、Double等存储为Object类型，这个过程叫做自动装箱或向上转型。但是问题在于取数据时，必须做强制类型转换，将Object向下转型为String或Double等类型。向下转型存在很大的风险，需要事先知道具体的下转型类型是什么，一旦忘记或写错，在运行必然抛出异常，但在编译期间却不易发现，因此存在极大的安全隐患，应该尽量避免使用向下转型。</p>
+<p>下面是使用Object的一个示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ObjectFoo</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Object foo;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">ObjectFoo</span><span class="params">(Object f)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = f;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">getFoo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> foo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFoo</span><span class="params">(Object foo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>具体调用如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">ObjectFoo strFoo1 = <span class="keyword">new</span> ObjectFoo(<span class="string">"hello Object"</span>);</span><br><span class="line">ObjectFoo intFoo1 = <span class="keyword">new</span> ObjectFoo(<span class="number">100</span>);</span><br><span class="line"><span class="comment">// 此处需要强制类型转换为String</span></span><br><span class="line">String strRst = (String) strFoo1.getFoo();</span><br><span class="line"><span class="comment">// 此处需要强制类型转换为int</span></span><br><span class="line"><span class="keyword">int</span> intRst = (<span class="keyword">int</span>) intFoo1.getFoo();</span><br><span class="line"></span><br><span class="line">System.out.println(<span class="string">"strFoo1.getFoo:"</span> + strRst);</span><br><span class="line">System.out.println(<span class="string">"intFoo1.getFoo:"</span> + intRst);</span><br></pre></td></tr></table></figure>
+<p>正因为这个过程麻烦且容易出错，在Java 1.5中推出了泛型这个新特性，其本质是参数化类型。泛型在使用时会指明具体的类型，因此不需要向下转型，编译的时候也会检查类型安全，泛型还可以提高代码重用性，概括来说就是简单易用并且安全，泛型可用在类、接口、方法中，分别叫做泛型类、泛型接口和泛型方法，下面会一一介绍。</p>
+<h4 id="u6CDB_u578B_u7C7B"><a href="#u6CDB_u578B_u7C7B" class="headerlink" title="泛型类"></a>泛型类</h4><p>依然以上述场景为例，先看一下利用泛型类是如何实现的：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericsFoo</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T foo;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GenericsFoo</span><span class="params">(T f)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = f;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getFoo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> foo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFoo</span><span class="params">(T foo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = foo;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>泛型类的调用：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 使用泛型时必须指定具体类型，如String，不再需要类型转换</span></span><br><span class="line">GenericsFoo&lt;String&gt; strFoo2 = <span class="keyword">new</span> GenericsFoo&lt;&gt;(<span class="string">"Hello Generics"</span>);</span><br><span class="line"><span class="comment">// 使用泛型时必须指定具体类型，如Integer，不再需要类型转换</span></span><br><span class="line">GenericsFoo&lt;Integer&gt; intFoo2 = <span class="keyword">new</span> GenericsFoo&lt;&gt;(<span class="number">100</span>);</span><br><span class="line"></span><br><span class="line">System.out.println(<span class="string">"strFoo2.getFoo:"</span> + strFoo2.getFoo());</span><br><span class="line">System.out.println(<span class="string">"intFoo2.getFoo:"</span> + intFoo2.getFoo());</span><br></pre></td></tr></table></figure>
+<p>从上面代码可以看到，跟普通的类相比，多出了<code>&lt;T&gt;</code>符号，T是自定义的标识符，也作为参数，用来传递数据类型，称之为类型参数。T可以理解为数据类型的占位符，在运行时会被替换为真正的数据类型，上面示例中T会被替换为String和Integer。</p>
+<h4 id="u6CDB_u578B_u89C4_u5219"><a href="#u6CDB_u578B_u89C4_u5219" class="headerlink" title="泛型规则"></a>泛型规则</h4><ol>
+<li>泛型类型参数只能是类类型，包括自定义类。</li>
+<li>类型参数不一定写为T，实际上可以任意定义。但习惯上使用单个大写字母，并且通常有如下含义：T-Type（表示一般数据类型）、K-Key（表示键）、V-Value（表示值）、N-Number（表示数值类型）、E-Element（集合中的元素，在集合中使用）、？（表示不确定的类型，用作通配符）等等。</li>
+<li>泛型的类型参数可以有多个，用逗号隔开，如<code>&lt;K, V&gt;</code>。</li>
+<li>泛型的参数类型可以使用extends语句，例如<code>&lt;T extends superclass&gt;</code>，叫做限制泛型。如果有多个类和接口，写法为<code>&lt;T extends SomeClass &amp; interface1 &amp; interface2 &amp; interface3&gt;</code>，但只能存在一个类，因为Java只能继承一个类，多个接口需写在类的后面。</li>
+<li>泛型的参数类型可以是通配符类型，例如<code>Class&lt;?&gt; classType = Class.forName(&quot;java.lang.String&quot;)</code>。</li>
+</ol>
+<h4 id="u6CDB_u578B_u65B9_u6CD5"><a href="#u6CDB_u578B_u65B9_u6CD5" class="headerlink" title="泛型方法"></a>泛型方法</h4><p>使用泛型方法时不必指明参数类型，编译器会根据传递的参数自动查找具体的类型，这一点与泛型类不同。泛型方法与其所在类是不是泛型类没有关系，普通类也可拥有泛型方法，要定义一个泛型方法，只需要将类型参数放在修饰符之后、返回值之前即可。一旦定义了类型参数，就可以在参数列表、方法体及返回值中使用了。</p>
+<p>下面代码是在上述泛型类的基础上增加了一个泛型方法：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericsFoo</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T foo;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">GenericsFoo</span><span class="params">(T f)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = f;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getFoo</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> foo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setFoo</span><span class="params">(T foo)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.foo = foo;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 泛型方法</span></span><br><span class="line">    <span class="keyword">public</span> &lt;V&gt; <span class="function"><span class="keyword">void</span> <span class="title">getValue</span><span class="params">(V f)</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"The value is:"</span> + f);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>泛型方法除了定义不同，调用方法就跟普通方法一样：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">GenericsFoo&lt;String&gt; strFoo2 = <span class="keyword">new</span> GenericsFoo&lt;&gt;(<span class="string">"Hello"</span>);</span><br><span class="line"></span><br><span class="line">strFoo2.getValue(strFoo2.getFoo());</span><br><span class="line">strFoo2.getValue(<span class="string">"Generics Method"</span>);</span><br><span class="line">strFoo2.getValue(<span class="number">255</span>);</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<blockquote>
+<p>The value is:Hello<br>The value is:Generics Method<br>The value is:255</p>
+</blockquote>
+<h4 id="u6CDB_u578B_u63A5_u53E3"><a href="#u6CDB_u578B_u63A5_u53E3" class="headerlink" title="泛型接口"></a>泛型接口</h4><p>泛型接口跟泛型类定义很像，直接放上示例代码，相信大家都能看懂。</p>
+<p>定义泛型接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">Info</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getVar</span><span class="params">()</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>泛型接口的实现类：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">InfoImp</span>&lt;<span class="title">T</span>&gt; <span class="keyword">implements</span> <span class="title">Info</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> T var;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">InfoImp</span><span class="params">(T var)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.var = var;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">setVar</span><span class="params">(T var)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.var = var;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="annotation">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> T <span class="title">getVar</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> var;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用示例：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericsInterface</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        Info&lt;String&gt; strObj = <span class="keyword">new</span> InfoImp&lt;&gt;(<span class="string">"Hello Generics Interface"</span>);</span><br><span class="line">        System.out.println(<span class="string">"The string value is:"</span> + strObj.getVar());</span><br><span class="line"></span><br><span class="line">        Info&lt;Integer&gt; intObj = <span class="keyword">new</span> InfoImp&lt;&gt;(<span class="number">1024</span>);</span><br><span class="line">        System.out.println(<span class="string">"The integer value is:"</span> + intObj.getVar());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>输出结果：</p>
+<blockquote>
+<p>The string value is:Hello Generics Interface<br>The integer value is:1024</p>
+</blockquote>
+<h4 id="u9650_u5236_u6CDB_u578B"><a href="#u9650_u5236_u6CDB_u578B" class="headerlink" title="限制泛型"></a>限制泛型</h4><p>上面泛型类的示例中<code>public class GenericsFoo&lt;T&gt;</code> 并没有限制类型参数T的类型，实际上这里相当于Object，可以是任何类型。有时候我们需要对此处的类型做特定限制，这就是限制泛型了，听起来有点抽象，举个例子很容易就明白了。</p>
+<p>限制泛型的基本语法为<code>&lt;T extends SuperClass(或Interface)&gt;</code>，这里的extends需要广义理解，接口也是用它，这就表示T的类型只能是该SuperClass的子类或者是任何实现了这个接口的类的类型，这样就对泛型做了限制。</p>
+<p>假设定义一个父类Geometry：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Geometry</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> String name;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">double</span> area;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>再定义3个类，其中Circle、Square继承自Geometry，Keyboard没有继承Geometry。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Circle</span> <span class="keyword">extends</span> <span class="title">Geometry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Square</span> <span class="keyword">extends</span> <span class="title">Geometry</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">Keyboard</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>限制泛型类的定义如下：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">GenericsRestrict</span>&lt;<span class="title">T</span> <span class="keyword">extends</span> <span class="title">Geometry</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如上所示，泛型类型仅能是Geomerty或其子类，其他类型则会报错。</p>
+<p>调用测试，如果是限制之外的类型就会报错：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">TestClass</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        GenericsRestrict&lt;Square&gt; square = <span class="keyword">new</span> GenericsRestrict&lt;&gt;();</span><br><span class="line">        GenericsRestrict&lt;Circle&gt; circle = <span class="keyword">new</span> GenericsRestrict&lt;&gt;();</span><br><span class="line">        <span class="comment">// 因为Keyboard没有继承Geometry,下面语句报错</span></span><br><span class="line">        GenericsRestrict&lt;Keyboard&gt; keyboard = <span class="keyword">new</span> GenericsRestrict&lt;&gt;();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>当然extends后面可以是接口或类与多个接口，规范及原理相同，这里不再赘述。</p>
+<h4 id="u901A_u914D_u7B26_u6CDB_u578B"><a href="#u901A_u914D_u7B26_u6CDB_u578B" class="headerlink" title="通配符泛型"></a>通配符泛型</h4><p>为了解决类型被限制死了而不能动态根据需要来确定的缺点，引入了“通配符泛型”， 如&lt;? extends Collection&gt;，？代表未知类型，这个类型可以是Collection接口的所有实现类。使用通配符有以下两点需要注意：</p>
+<ol>
+<li>如果只指定了&lt;?&gt;，而没有extends，则可以是任意类型。</li>
+<li>使用通配符？不但可以限制类型的上限，还可以限制下限。限制下限使用 super 关键字，例如 &lt;? super Number&gt; 表示只能接受 Number 及其父类，可接受的最低类型为Number。上限限制则是使用上面提到的extends关键字。</li>
+</ol>
+<h4 id="u6CE8_u610F"><a href="#u6CE8_u610F" class="headerlink" title="注意"></a>注意</h4><p>如果在使用泛型时没有指定具体的数据类型，就会擦除泛型类型，并向上转型为 Object，在获取数据时必须向下强制类型转换，这与不使用泛型是一样的。</p>
+
+      
+    </div>
+
+    
+      
+      
+
+  <div class="post-copyright">
+    <p class="copyright-item">
+      <span>原文作者: </span>
+      <a href="http://aspook.com">AN</a>
+    </p>
+    <p class="copyright-item">
+      <span>原文链接: </span>
+      <a href="http://aspook.com/2016/07/20/理解Java泛型/">http://aspook.com/2016/07/20/理解Java泛型/</a>
+    </p>
+    <p class="copyright-item">
+      <span>许可协议: </span>
+      
+      <a rel="license" href="http://creativecommons.org/licenses/by-nc/4.0/" target="_blank">知识共享署名-非商业性使用 4.0 国际许可协议</a>
+    </p>
+  </div>
+
+
+
+      
+      
+    
+
+    
+      <footer class="post-footer">
+        
+          <div class="post-tags">
+            
+              <a href="/tags/Java泛型/">Java泛型</a>
+            
+          </div>
+        
+        
+        
+  <nav class="post-nav">
+    
+      <a class="prev" href="/2016/07/28/在南下的火车上/">
+        <i class="iconfont icon-left"></i>
+        <span class="prev-text nav-default">在南下的火车上</span>
+        <span class="prev-text nav-mobile">上一篇</span>
+      </a>
+    
+    
+      <a class="next" href="/2016/07/15/Android微信分享闭环研究/">
+        <span class="next-text nav-default">Android微信分享闭环研究</span>
+        <span class="prev-text nav-mobile">下一篇</span>
+        <i class="iconfont icon-right"></i>
+      </a>
+    
+  </nav>
+
+      </footer>
+    
+
+  </article>
+
+
+          </div>
+          
+  <div class="comments" id="comments">
+    
+  </div>
+
+
+        </div>
+      </main>
+
+      <footer id="footer" class="footer">
+
+  <div class="social-links">
+    
+      
+        
+          <a href="mailto:your@email.com" class="iconfont icon-email" title="email"></a>
+        
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+    
+    
+      
+      <a href="/atom.xml" class="iconfont icon-rss" title="rss"></a>
+    
+  </div>
+
+
+<div class="copyright">
+  <span class="power-by">
+    由 <a class="hexo-link" href="https://hexo.io/">Hexo</a> 强力驱动
+  </span>
+  <span class="division">|</span>
+  <span class="theme-info">
+    主题 - 
+    <a class="theme-link" href="https://github.com/ahonn/hexo-theme-even">Even</a>
+  </span>
+
+  <span class="copyright-year">
+    
+    &copy; 
+     
+      2015 - 
+    
+    2017
+
+    <span class="heart">
+      <i class="iconfont icon-heart"></i>
+    </span>
+    <span class="author">AN</span>
+  </span>
+</div>
+
+      </footer>
+
+      <div class="back-to-top" id="back-to-top">
+        <i class="iconfont icon-up"></i>
+      </div>
+    </div>
+
+    
+  
+
+
+
+    
+
+
+
+
+  
+    <script type="text/javascript" src="/lib/jquery/jquery-3.1.1.min.js"></script>
+  
+
+  
+    <script type="text/javascript" src="/lib/slideout/slideout.js"></script>
+  
+
+  
+
+
+    <script type="text/javascript" src="/js/src/even.js?v=2.6.0"></script>
+<script type="text/javascript" src="/js/src/bootstrap.js?v=2.6.0"></script>
+
+  </body>
+</html>
