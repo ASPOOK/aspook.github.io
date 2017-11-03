@@ -1,0 +1,182 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta http-equiv="content-type" content="text/html; charset=utf-8"><meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"><meta content="yes" name="apple-mobile-web-app-capable"><meta content="black-translucent" name="apple-mobile-web-app-status-bar-style"><meta content="telephone=no" name="format-detection"><meta name="description" content="请不要灰心，你也会有人妒忌"><title>Java内存模型与线程 | ASPOOK</title><link rel="stylesheet" type="text/css" href="/css/style.css?v=0.0.0"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/normalize/4.1.1/normalize.min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/pure-min.css"><link rel="stylesheet" type="text/css" href="//cdn.bootcss.com/pure/0.6.0/grids-responsive-min.css"><link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.2/css/font-awesome.min.css"><script type="text/javascript" src="//cdn.bootcss.com/jquery/2.2.3/jquery.min.js"></script><link rel="Shortcut Icon" type="image/x-icon" href="/favicon.ico"><link rel="apple-touch-icon" href="/apple-touch-icon.png"><link rel="apple-touch-icon-precomposed" href="/apple-touch-icon.png"></head><body><div class="body_container"><div id="header"><div class="site-name"><h1 class="hidden">Java内存模型与线程</h1><a id="logo" href="/.">ASPOOK</a><p class="description">Serendipity</p></div><div id="nav-menu"><a href="/." class="current"><i class="fa fa-home"> 首页</i></a><a href="/archives/"><i class="fa fa-archive"> 归档</i></a><a href="/about/"><i class="fa fa-user"> 关于</i></a></div></div><div id="layout" class="pure-g"><div class="pure-u-1 pure-u-md-3-4"><div class="content_container"><div class="post"><h1 class="post-title">Java内存模型与线程</h1><div class="post-meta">May 12, 2017<span> | </span><span class="category"><a href="/categories/Android/">Android</a></span><script src="https://dn-lbstatics.qbox.me/busuanzi/2.3/busuanzi.pure.mini.js" async></script><span id="busuanzi_container_page_pv"> | <span id="busuanzi_value_page_pv"></span><span> Hits</span></span></div><a data-disqus-identifier="2017/05/12/Java内存模型与线程/" href="/2017/05/12/Java内存模型与线程/#disqus_thread" class="disqus-comment-count"></a><div class="post-content"><p>###前言<br>本文由PPT整理而来。</p>
+<h3 id="Page1"><a href="#Page1" class="headerlink" title="Page1"></a>Page1</h3><h4 id="u76EE_u5F55"><a href="#u76EE_u5F55" class="headerlink" title="目录"></a>目录</h4><ul>
+<li>进程与线程</li>
+<li>Java内存模型</li>
+<li>Java线程</li>
+</ul>
+<h3 id="Page2"><a href="#Page2" class="headerlink" title="Page2"></a>Page2</h3><h4 id="u8FDB_u7A0B"><a href="#u8FDB_u7A0B" class="headerlink" title="进程"></a>进程</h4><ul>
+<li>一般一个应用程序对应一个进程</li>
+<li>进程有自己的资源和内存地址空间</li>
+<li>各个进程之间互不干扰</li>
+<li>进程会保存程序的运行状态，支持切换及恢复</li>
+<li>进程使操作系统看起来同一时刻有多个任务在执行</li>
+</ul>
+<h3 id="Page3"><a href="#Page3" class="headerlink" title="Page3"></a>Page3</h3><h4 id="u7EBF_u7A0B"><a href="#u7EBF_u7A0B" class="headerlink" title="线程"></a>线程</h4><ul>
+<li>一个进程可以有多个线程</li>
+<li>多个线程共享同一进程的资源和内存空间</li>
+<li>线程创建、调度、切换及线程间通信的开销小于进程</li>
+<li>UI线程编程模型</li>
+<li>多线程并发执行可能会引发问题</li>
+</ul>
+<h3 id="Page4"><a href="#Page4" class="headerlink" title="Page4"></a>Page4</h3><h4 id="u5C0F_u7ED3"><a href="#u5C0F_u7ED3" class="headerlink" title="小结"></a>小结</h4><ul>
+<li>进程是操作系统进行资源分配的基本单位</li>
+<li>线程是操作系统进行调度的基本单位</li>
+<li>进程让操作系统的并发成为可能</li>
+<li>线程让应用程序的并发成为可能</li>
+</ul>
+<h3 id="Page5"><a href="#Page5" class="headerlink" title="Page5"></a>Page5</h3><h4 id="u601D_u8003"><a href="#u601D_u8003" class="headerlink" title="思考"></a>思考</h4><ul>
+<li>思考1：为什么要发明线程？何不用多进程来取代多线程？</li>
+<li>思考2：多线程性能是否一定优于单线程？</li>
+<li>思考3：并发与并行有什么区别？</li>
+</ul>
+<h3 id="Page6"><a href="#Page6" class="headerlink" title="Page6"></a>Page6</h3><h4 id="Java_u5185_u5B58_u6A21_u578B"><a href="#Java_u5185_u5B58_u6A21_u578B" class="headerlink" title="Java内存模型"></a>Java内存模型</h4><ul>
+<li>概念理解</li>
+<li>缓存一致性</li>
+<li>内存间交互协议</li>
+<li>volatile语义</li>
+<li>happens-before原则</li>
+<li>原子性</li>
+<li>可见性</li>
+<li>有序性</li>
+</ul>
+<h3 id="Page7"><a href="#Page7" class="headerlink" title="Page7"></a>Page7</h3><h4 id="u7269_u7406_u673A_u5C42_u9762_u7684_u5E76_u53D1"><a href="#u7269_u7406_u673A_u5C42_u9762_u7684_u5E76_u53D1" class="headerlink" title="物理机层面的并发"></a>物理机层面的并发</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/CPU-cache-mainMemory.png" alt="这里写图片描述"></p>
+<h3 id="Page8"><a href="#Page8" class="headerlink" title="Page8"></a>Page8</h3><h4 id="u5E94_u7528_u7A0B_u5E8F_u5C42_u9762_u7684_u5E76_u53D1"><a href="#u5E94_u7528_u7A0B_u5E8F_u5C42_u9762_u7684_u5E76_u53D1" class="headerlink" title="应用程序层面的并发"></a>应用程序层面的并发</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/Thread-workMemory-mainMemory.png" alt="这里写图片描述"></p>
+<h3 id="Page9"><a href="#Page9" class="headerlink" title="Page9"></a>Page9</h3><h4 id="u6982_u5FF5_u7406_u89E3"><a href="#u6982_u5FF5_u7406_u89E3" class="headerlink" title="概念理解"></a>概念理解</h4><ul>
+<li>内存模型可以理解为在特定的操作协议下，对特定的内存或高速缓存进行读写访问的过程抽象。不同的物理机可能有不同的内存模型，JVM也有自己的内存模型，基本原理是类似的。</li>
+<li>JVM是跨平台的，为了实现跨平台，Java虚拟机规范视图定义一种JMM(Java Memory Model)来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台上都能达到一致的内存访问效果。对比C/C++等非跨平台语言，需针对不同平台写程序，同时体现了JVM这个抽象层的好处。</li>
+<li>Java内存模型规定所有的变量都是存在主存当中（类似于前面说的物理内存），每个线程都有自己的工作内存（类似于前面的高速缓存）。线程对变量的所有操作都必须在工作内存中进行，而不能直接对主存进行操作。并且每个线程不能访问其他线程的工作内存。</li>
+<li>Java内存模型经过长时间的验证修补和发展，JDK1.5之后，基本成熟和完善起来了。</li>
+</ul>
+<h3 id="Page10"><a href="#Page10" class="headerlink" title="Page10"></a>Page10</h3><h4 id="u5185_u5B58_u95F4_u4EA4_u4E92_u534F_u8BAE"><a href="#u5185_u5B58_u95F4_u4EA4_u4E92_u534F_u8BAE" class="headerlink" title="内存间交互协议"></a>内存间交互协议</h4><ul>
+<li>lock：作用于主内存变量，将其标识为线程独占</li>
+<li>unlock：作用于主内存变量，将线程独占释放</li>
+<li>read：作用于主内存变量，把变量从主内存读到线程工作内存，之后是load</li>
+<li>load：作用于工作内存变量，把之前read的值存入工作内存副本中</li>
+<li>use：作用于工作内存变量，将其值传给执行引擎</li>
+<li>assign：作用于工作内存变量，将从执行引擎收到的值赋给工作内存变量</li>
+<li>store：作用于工作内存变量，将工作内存的值传送到主内存，之后是write</li>
+<li>wirte：作用于主内存变量，将store操作得到的值存入主内存中</li>
+</ul>
+<h3 id="Page11"><a href="#Page11" class="headerlink" title="Page11"></a>Page11</h3><h4 id="u9644_u52A0_u89C4_u5219"><a href="#u9644_u52A0_u89C4_u5219" class="headerlink" title="附加规则"></a>附加规则</h4><ul>
+<li>不允许read和load、store和write操作之一单独出现</li>
+<li>不允许一个线程丢弃它最近的assign操作，即变量在工作内存中改变后必须把该变化同步回主内存</li>
+<li>不允许一个线程无原因地（没有发生assign）把数据从工作内存同步回主内存</li>
+<li>一个新变量只能在主内存中诞生，不允许在工作内存中直接使用一个未被初始化（load或assgin）的变量，即对一个变量实施use、store操作之前，必须先执行了load和assgin。</li>
+<li>一个变量同一时刻只允许一条线程对其进行lock，执行unlock才能释放</li>
+<li>如对一个变量执行lock操作，则会清空工作内存中此变量的值，在执行引擎使用这个变量前，需要重新执行load或assign初始化变量值</li>
+<li>如果一个变量没有被lock，则不能执行unlock，也不能unlock其他线程</li>
+<li>对一个变量执行unlock之前，必须把此变量同步回主内存（执行store、write）</li>
+</ul>
+<h3 id="Page12"><a href="#Page12" class="headerlink" title="Page12"></a>Page12</h3><h4 id="volatile_u5173_u952E_u5B57"><a href="#volatile_u5173_u952E_u5B57" class="headerlink" title="volatile关键字"></a>volatile关键字</h4><ul>
+<li>保证变量对所有线程的可见性</li>
+<li>禁止指令重排序优化</li>
+</ul>
+<h3 id="Page13"><a href="#Page13" class="headerlink" title="Page13"></a>Page13</h3><h4 id="u6307_u4EE4_u91CD_u6392_u5E8F"><a href="#u6307_u4EE4_u91CD_u6392_u5E8F" class="headerlink" title="指令重排序"></a>指令重排序</h4><ul>
+<li><p>指令重排序（Instruction Reorder）——处理器为了提高程序运行效率，可能会对输入代码进行优化，它不保证程序中各个语句的执行先后顺序同代码中的顺序一致，但是它会保证程序最终执行结果和代码顺序执行的结果是一致的</p>
+</li>
+<li><p>有数据依赖性则不能进行指令重排序，如下表所示：</p>
+<p>| <strong>名称</strong> | <strong>代码示例</strong>     | <strong>说明</strong>          |<br>| —— | ———— | ————— |<br>| 写后读    | a = 1;b = a; | 写一个变量之后，再读这个位置。 |<br>| 写后写    | a = 1;a = 2; | 写一个变量之后，再写这个变量。 |<br>| 读后写    | a = b;b = 1; | 读一个变量之后，再写这个变量。 |</p>
+</li>
+</ul>
+<h3 id="Page14"><a href="#Page14" class="headerlink" title="Page14"></a>Page14</h3><h4 id="u6848_u4F8B1_uFF1Avolatile_u81EA_u589E_u64CD_u4F5C"><a href="#u6848_u4F8B1_uFF1Avolatile_u81EA_u589E_u64CD_u4F5C" class="headerlink" title="案例1：volatile自增操作"></a>案例1：volatile自增操作</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/volatile.png" alt="这里写图片描述"></p>
+<h3 id="Page15"><a href="#Page15" class="headerlink" title="Page15"></a>Page15</h3><h4 id="u6848_u4F8B2_uFF1A_u6307_u4EE4_u91CD_u6392_u5E8F_u4F18_u5316"><a href="#u6848_u4F8B2_uFF1A_u6307_u4EE4_u91CD_u6392_u5E8F_u4F18_u5316" class="headerlink" title="案例2：指令重排序优化"></a>案例2：指令重排序优化</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/command-reorder.png" alt="这里写图片描述"></p>
+<h3 id="Page16"><a href="#Page16" class="headerlink" title="Page16"></a>Page16</h3><h4 id="u6848_u4F8B3_uFF1ADCL_u5355_u4F8B_u6A21_u5F0F"><a href="#u6848_u4F8B3_uFF1ADCL_u5355_u4F8B_u6A21_u5F0F" class="headerlink" title="案例3：DCL单例模式"></a>案例3：DCL单例模式</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/DCL.png" alt="这里写图片描述"></p>
+<h3 id="Page17"><a href="#Page17" class="headerlink" title="Page17"></a>Page17</h3><h4 id="volatile_u89C4_u5219_u5C0F_u7ED3"><a href="#volatile_u89C4_u5219_u5C0F_u7ED3" class="headerlink" title="volatile规则小结"></a>volatile规则小结</h4><ul>
+<li>在工作内存中，每次使用V前必须从主内存刷新最新的值，用于保证能看见其他线程对变量V做的修改（即read-read-use联动）</li>
+<li>在工作内存中，每次修改V之后必须立刻同步回主内存，用于保证其他线程可以看到自己对V做的修改（即assign-store-write联动）</li>
+<li>volatile修饰的变量不会被指令重排序优化，保证代码执行顺序与程序顺序相同</li>
+</ul>
+<h3 id="Page18"><a href="#Page18" class="headerlink" title="Page18"></a>Page18</h3><h4 id="happens-before_u539F_u5219"><a href="#happens-before_u539F_u5219" class="headerlink" title="happens-before原则"></a>happens-before原则</h4><ul>
+<li>程序次序规则：在一个线程内，按照程序逻辑执行</li>
+<li>管程锁定规则：一个unlock操作先行发生于后面对同一个锁的lock操作</li>
+<li>线程启动规则：Thread对象的start()方法先行发生于此线程的每一个动作</li>
+<li>线程终止规则：线程中的所有操作都先行发生于对此线程的终止检测</li>
+<li>线程中断规则：对线程interrupt()方法的调用先行发生于被中断线程的代码检测到中断事件的发生</li>
+<li>对象终结规则：一个对象的初始化完成（构造函数执行结束）先行发生于它的finalize()方法的开始</li>
+<li>传递性：如果操作A先行发生于操作B，操作B先行发生于操作C，则A先行发生于操作C</li>
+</ul>
+<h3 id="Page19"><a href="#Page19" class="headerlink" title="Page19"></a>Page19</h3><h4 id="u5148_u884C_u53D1_u751F_u539F_u5219_u5224_u65AD_u793A_u4F8B"><a href="#u5148_u884C_u53D1_u751F_u539F_u5219_u5224_u65AD_u793A_u4F8B" class="headerlink" title="先行发生原则判断示例"></a>先行发生原则判断示例</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/happens-before.png" alt="这里写图片描述"></p>
+<h3 id="Page20"><a href="#Page20" class="headerlink" title="Page20"></a>Page20</h3><h4 id="u4E09_u5927_u7279_u5F81"><a href="#u4E09_u5927_u7279_u5F81" class="headerlink" title="三大特征"></a>三大特征</h4><ul>
+<li>原子性</li>
+<li>可见性</li>
+<li>有序性</li>
+</ul>
+<h3 id="Page21"><a href="#Page21" class="headerlink" title="Page21"></a>Page21</h3><h4 id="u539F_u5B50_u6027"><a href="#u539F_u5B50_u6027" class="headerlink" title="原子性"></a>原子性</h4><ul>
+<li>在Java中，对基本数据类型的变量的读取和赋值操作是原子性操作</li>
+<li>read load assign use store write操作具有原子性</li>
+<li>synchronized同步块也具有原子性</li>
+<li>volatile无法保证原子性</li>
+</ul>
+<h3 id="Page22"><a href="#Page22" class="headerlink" title="Page22"></a>Page22</h3><h4 id="u601D_u8003_uFF1A_u54EA_u4E2A_u64CD_u4F5C_u5177_u6709_u539F_u5B50_u6027"><a href="#u601D_u8003_uFF1A_u54EA_u4E2A_u64CD_u4F5C_u5177_u6709_u539F_u5B50_u6027" class="headerlink" title="思考：哪个操作具有原子性"></a>思考：哪个操作具有原子性</h4><ul>
+<li>x = 10 </li>
+<li>y = x</li>
+<li>x++</li>
+<li>x = x + 1</li>
+</ul>
+<h3 id="Page23"><a href="#Page23" class="headerlink" title="Page23"></a>Page23</h3><h4 id="u53EF_u89C1_u6027"><a href="#u53EF_u89C1_u6027" class="headerlink" title="可见性"></a>可见性</h4><ul>
+<li>volatile可以保证可见性</li>
+<li>synchronized</li>
+<li>final</li>
+<li>this引用逃逸</li>
+</ul>
+<h3 id="Page24"><a href="#Page24" class="headerlink" title="Page24"></a>Page24</h3><h4 id="u6709_u5E8F_u6027"><a href="#u6709_u5E8F_u6027" class="headerlink" title="有序性"></a>有序性</h4><ul>
+<li>Java程序中天然的有序性可以总结为：如果在本线程内观察，所有的操作都是有序的；如果在一个线程中观察另一个线程，所有的操作都是无序的。前半句指线程内表现为串行的语义——Within Thread As-If-Serial Semantics；后半句指“指令重排序”现象和“工作内存与主内存同步延迟”现象。</li>
+<li>volatile禁止指令重排序</li>
+<li>synchronized保证线程间操作的有序性</li>
+</ul>
+<h3 id="Page25"><a href="#Page25" class="headerlink" title="Page25"></a>Page25</h3><h4 id="Java_u7EBF_u7A0B"><a href="#Java_u7EBF_u7A0B" class="headerlink" title="Java线程"></a>Java线程</h4><ul>
+<li>线程实现</li>
+<li>线程调度</li>
+<li>线程状态</li>
+</ul>
+<h3 id="Page26"><a href="#Page26" class="headerlink" title="Page26"></a>Page26</h3><h4 id="u7EBF_u7A0B_u5B9E_u73B0_u65B9_u5F0F"><a href="#u7EBF_u7A0B_u5B9E_u73B0_u65B9_u5F0F" class="headerlink" title="线程实现方式"></a>线程实现方式</h4><ul>
+<li>使用内核线程实现</li>
+<li>使用用户线程实现</li>
+<li>使用用户线程加轻量级进程混合实现</li>
+</ul>
+<h3 id="Page27"><a href="#Page27" class="headerlink" title="Page27"></a>Page27</h3><h4 id="1_3A1_u6A21_u578B"><a href="#1_3A1_u6A21_u578B" class="headerlink" title="1:1模型"></a>1:1模型</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/1%EF%BC%9A1.png" alt="这里写图片描述"></p>
+<p>图片摘自《深入理解Java虚拟机》</p>
+<h3 id="Page28"><a href="#Page28" class="headerlink" title="Page28"></a>Page28</h3><h4 id="1_3AN_u6A21_u578B"><a href="#1_3AN_u6A21_u578B" class="headerlink" title="1:N模型"></a>1:N模型</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/1%EF%BC%9AN.png" alt="这里写图片描述"></p>
+<p>图片摘自《深入理解Java虚拟机》</p>
+<h3 id="Page29"><a href="#Page29" class="headerlink" title="Page29"></a>Page29</h3><h4 id="N_3AM_u6A21_u578B"><a href="#N_3AM_u6A21_u578B" class="headerlink" title="N:M模型"></a>N:M模型</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/N%EF%BC%9AM.png" alt="这里写图片描述"></p>
+<h3 id="Page30"><a href="#Page30" class="headerlink" title="Page30"></a>Page30</h3><h4 id="Java_u7EBF_u7A0B_u5B9E_u73B0_u65B9_u5F0F"><a href="#Java_u7EBF_u7A0B_u5B9E_u73B0_u65B9_u5F0F" class="headerlink" title="Java线程实现方式"></a>Java线程实现方式</h4><ul>
+<li>JDK1.2之前，使用用户线程方式实现</li>
+<li>JDK1.2改为基于操作系统原生线程模型实现</li>
+<li>目前JVM线程的映射方式取决于操作系统支持哪种线程模型，不同平台不一定一致。如Windows、Linux上是一对一实现，即一条Java线程映射到一条轻量级进程中；而Solaris中同时支持一对一及多对多。</li>
+<li>Java语言层是统一的，JVM封装了操作系统的不同</li>
+</ul>
+<h3 id="Page31"><a href="#Page31" class="headerlink" title="Page31"></a>Page31</h3><h4 id="u7EBF_u7A0B_u8C03_u5EA6_u65B9_u5F0F"><a href="#u7EBF_u7A0B_u8C03_u5EA6_u65B9_u5F0F" class="headerlink" title="线程调度方式"></a>线程调度方式</h4><ul>
+<li>协同式线程调度——Cooperative Threads-Scheduling   （如Windows 3.x）</li>
+</ul>
+<ul>
+<li>抢占式线程调度——Preemptive Threads-Scheduling   （线程优先级）</li>
+</ul>
+<h3 id="Page32"><a href="#Page32" class="headerlink" title="Page32"></a>Page32</h3><h4 id="Java_u7EBF_u7A0B_u72B6_u6001"><a href="#Java_u7EBF_u7A0B_u72B6_u6001" class="headerlink" title="Java线程状态"></a>Java线程状态</h4><p><img src="http://7xq0xd.com1.z0.glb.clouddn.com/image/Thread%20State.png" alt="这里写图片描述"></p>
+<h3 id="Page33"><a href="#Page33" class="headerlink" title="Page33"></a>Page33</h3><h4 id="u5E76_u53D1_u7F16_u7A0B_u76F8_u5173"><a href="#u5E76_u53D1_u7F16_u7A0B_u76F8_u5173" class="headerlink" title="并发编程相关"></a>并发编程相关</h4><ul>
+<li>sleep</li>
+<li>join</li>
+<li>yield</li>
+<li>wait、notify、notifyAll</li>
+<li>synchronized</li>
+<li>volatile</li>
+<li>Lock</li>
+<li>ThreadLocal</li>
+<li>同步容器，如Vector、Stack、HashTable</li>
+<li>并发容器，如ConcurrentHashMap、CopyOnWriteArrayList</li>
+<li>阻塞队列BlockingQueue</li>
+<li>线程池</li>
+<li>Callable、Future、FutureTask</li>
+<li>……</li>
+</ul>
+<h4 id="u53C2_u8003_u6587_u732E"><a href="#u53C2_u8003_u6587_u732E" class="headerlink" title="参考文献"></a>参考文献</h4><ul>
+<li>《深入理解Java虚拟机》</li>
+</ul>
+</div><script type="text/javascript" src="/js/share.js?v=0.0.0" async></script><a data-url="http://aspook.com/2017/05/12/Java内存模型与线程/" data-id="cj9jpl503005am6xi2l8tld1s" class="article-share-link">分享到</a><div class="tags"><a href="/tags/Java内存模型/">Java内存模型</a><a href="/tags/线程/">线程</a></div><div class="post-nav"><a href="/2017/06/21/Android开发的二十条经验/" class="pre">Android开发的二十条经验</a><a href="/2017/04/02/libxxx-so-text-relocations问题的终极解决方案/" class="next">libxxx.so- text relocations问题的终极解决方案</a></div><div id="disqus_thread"><script>var disqus_shortname = 'aspook';
+var disqus_identifier = '2017/05/12/Java内存模型与线程/';
+var disqus_title = 'Java内存模型与线程';
+var disqus_url = 'http://aspook.com/2017/05/12/Java内存模型与线程/';
+(function() {
+  var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+  dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+  (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+})();</script><script id="dsq-count-scr" src="//aspook.disqus.com/count.js" async></script></div></div></div></div><div class="pure-u-1-4"><div id="sidebar"><div class="widget"><form action="//www.baidu.com/baidu" method="get" accept-charset="utf-8" target="_blank" class="search-form"><input type="search" name="word" maxlength="20" placeholder="Search"/><input type="hidden" name="si" value="http://aspook.com"/><input name="tn" type="hidden" value="bds"/><input name="cl" type="hidden" value="3"/><input name="ct" type="hidden" value="2097152"/><input name="s" type="hidden" value="on"/></form></div><div class="widget"><div class="widget-title"><i class="fa fa-folder-o"> 分类</i></div><ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/Algorithms/">Algorithms</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Android/">Android</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/GIS/">GIS</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/Java/">Java</a></li><li class="category-list-item"><a class="category-list-link" href="/categories/杂谈/">杂谈</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-star-o"> 标签</i></div><div class="tagcloud"><a href="/tags/通信/" style="font-size: 15px;">通信</a> <a href="/tags/APK瘦身/" style="font-size: 15px;">APK瘦身</a> <a href="/tags/微信支付/" style="font-size: 15px;">微信支付</a> <a href="/tags/微信wap支付/" style="font-size: 15px;">微信wap支付</a> <a href="/tags/微信网页支付/" style="font-size: 15px;">微信网页支付</a> <a href="/tags/诗词/" style="font-size: 15px;">诗词</a> <a href="/tags/历史/" style="font-size: 15px;">历史</a> <a href="/tags/Web地图/" style="font-size: 15px;">Web地图</a> <a href="/tags/矢量渲染/" style="font-size: 15px;">矢量渲染</a> <a href="/tags/切片地图/" style="font-size: 15px;">切片地图</a> <a href="/tags/栅格地图/" style="font-size: 15px;">栅格地图</a> <a href="/tags/Java泛型/" style="font-size: 15px;">Java泛型</a> <a href="/tags/clone/" style="font-size: 15px;">clone</a> <a href="/tags/对象克隆/" style="font-size: 15px;">对象克隆</a> <a href="/tags/Android线程/" style="font-size: 15px;">Android线程</a> <a href="/tags/线程通信/" style="font-size: 15px;">线程通信</a> <a href="/tags/AsyncTask/" style="font-size: 15px;">AsyncTask</a> <a href="/tags/工具类/" style="font-size: 15px;">工具类</a> <a href="/tags/公有构造函数/" style="font-size: 15px;">公有构造函数</a> <a href="/tags/诗歌/" style="font-size: 15px;">诗歌</a> <a href="/tags/65536/" style="font-size: 15px;">65536</a> <a href="/tags/64K-method/" style="font-size: 15px;">64K method</a> <a href="/tags/App安全/" style="font-size: 15px;">App安全</a> <a href="/tags/gradle/" style="font-size: 15px;">gradle</a> <a href="/tags/build加速/" style="font-size: 15px;">build加速</a> <a href="/tags/Intent/" style="font-size: 15px;">Intent</a> <a href="/tags/垃圾收集算法/" style="font-size: 15px;">垃圾收集算法</a> <a href="/tags/在南下的火车上/" style="font-size: 15px;">在南下的火车上</a> <a href="/tags/Android/" style="font-size: 15px;">Android</a> <a href="/tags/第三方框架/" style="font-size: 15px;">第三方框架</a> <a href="/tags/Android适配/" style="font-size: 15px;">Android适配</a> <a href="/tags/Context/" style="font-size: 15px;">Context</a> <a href="/tags/二叉树/" style="font-size: 15px;">二叉树</a> <a href="/tags/二叉树遍历/" style="font-size: 15px;">二叉树遍历</a> <a href="/tags/深度优先遍历/" style="font-size: 15px;">深度优先遍历</a> <a href="/tags/广度优先遍历/" style="font-size: 15px;">广度优先遍历</a> <a href="/tags/非递归实现/" style="font-size: 15px;">非递归实现</a> <a href="/tags/移动架构/" style="font-size: 15px;">移动架构</a> <a href="/tags/Android架构设计/" style="font-size: 15px;">Android架构设计</a> <a href="/tags/分包策略/" style="font-size: 15px;">分包策略</a> <a href="/tags/so文件/" style="font-size: 15px;">so文件</a> <a href="/tags/PIC/" style="font-size: 15px;">PIC</a> <a href="/tags/text-relocation/" style="font-size: 15px;">text relocation</a> <a href="/tags/AndroidManifest/" style="font-size: 15px;">AndroidManifest</a> <a href="/tags/activity-alias/" style="font-size: 15px;">activity-alias</a> <a href="/tags/瓦片地图/" style="font-size: 15px;">瓦片地图</a> <a href="/tags/远程视图/" style="font-size: 15px;">远程视图</a> <a href="/tags/AppWidget/" style="font-size: 15px;">AppWidget</a> <a href="/tags/Messenger/" style="font-size: 15px;">Messenger</a> <a href="/tags/进程间通信/" style="font-size: 15px;">进程间通信</a> <a href="/tags/如何看待与学习新技术/" style="font-size: 15px;">如何看待与学习新技术</a> <a href="/tags/本地广播/" style="font-size: 15px;">本地广播</a> <a href="/tags/LRU/" style="font-size: 15px;">LRU</a> <a href="/tags/类加载器/" style="font-size: 15px;">类加载器</a> <a href="/tags/对象创建/" style="font-size: 15px;">对象创建</a> <a href="/tags/内存分配/" style="font-size: 15px;">内存分配</a> <a href="/tags/访问定位/" style="font-size: 15px;">访问定位</a> <a href="/tags/Java内存模型/" style="font-size: 15px;">Java内存模型</a> <a href="/tags/线程/" style="font-size: 15px;">线程</a> <a href="/tags/JVM内存模型/" style="font-size: 15px;">JVM内存模型</a> <a href="/tags/Java内存分配/" style="font-size: 15px;">Java内存分配</a> <a href="/tags/Hybrid框架通信/" style="font-size: 15px;">Hybrid框架通信</a> <a href="/tags/Bundle/" style="font-size: 15px;">Bundle</a> <a href="/tags/源码解析/" style="font-size: 15px;">源码解析</a> <a href="/tags/内存优化/" style="font-size: 15px;">内存优化</a> <a href="/tags/高性能编码/" style="font-size: 15px;">高性能编码</a> <a href="/tags/AIDL/" style="font-size: 15px;">AIDL</a> <a href="/tags/Binder/" style="font-size: 15px;">Binder</a> <a href="/tags/Android消息机制源码解析/" style="font-size: 15px;">Android消息机制源码解析</a> <a href="/tags/MessageQueue/" style="font-size: 15px;">MessageQueue</a> <a href="/tags/Handler/" style="font-size: 15px;">Handler</a> <a href="/tags/Looper/" style="font-size: 15px;">Looper</a> <a href="/tags/Message/" style="font-size: 15px;">Message</a> <a href="/tags/Android架构组件/" style="font-size: 15px;">Android架构组件</a> <a href="/tags/Android文件存储/" style="font-size: 15px;">Android文件存储</a> <a href="/tags/内部存储/" style="font-size: 15px;">内部存储</a> <a href="/tags/外部存储/" style="font-size: 15px;">外部存储</a> <a href="/tags/微信分享/" style="font-size: 15px;">微信分享</a> <a href="/tags/分享闭环/" style="font-size: 15px;">分享闭环</a> <a href="/tags/开发经验/" style="font-size: 15px;">开发经验</a> <a href="/tags/Android书籍推荐/" style="font-size: 15px;">Android书籍推荐</a> <a href="/tags/App生命周期/" style="font-size: 15px;">App生命周期</a> <a href="/tags/Android架构/" style="font-size: 15px;">Android架构</a> <a href="/tags/快捷方式/" style="font-size: 15px;">快捷方式</a> <a href="/tags/shortcut/" style="font-size: 15px;">shortcut</a> <a href="/tags/Broadcast/" style="font-size: 15px;">Broadcast</a> <a href="/tags/Android广播/" style="font-size: 15px;">Android广播</a> <a href="/tags/Android布局性能优化/" style="font-size: 15px;">Android布局性能优化</a> <a href="/tags/Android图片缓存/" style="font-size: 15px;">Android图片缓存</a> <a href="/tags/全面屏适配/" style="font-size: 15px;">全面屏适配</a> <a href="/tags/Window/" style="font-size: 15px;">Window</a> <a href="/tags/Android-Studio/" style="font-size: 15px;">Android Studio</a> <a href="/tags/Instant-Run/" style="font-size: 15px;">Instant Run</a> <a href="/tags/Instrumentation/" style="font-size: 15px;">Instrumentation</a> <a href="/tags/activity启动流程/" style="font-size: 15px;">activity启动流程</a> <a href="/tags/choreographer/" style="font-size: 15px;">choreographer</a> <a href="/tags/丢帧/" style="font-size: 15px;">丢帧</a> <a href="/tags/帧率/" style="font-size: 15px;">帧率</a> <a href="/tags/卡顿监控/" style="font-size: 15px;">卡顿监控</a> <a href="/tags/性能监控/" style="font-size: 15px;">性能监控</a></div></div><div class="widget"><div class="widget-title"><i class="fa fa-file-o"> 最新文章</i></div><ul class="post-list"><li class="post-list-item"><a class="post-list-link" href="/2017/11/01/Android-Choreographer/">Android Choreographer</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/10/12/LocalBroadcastManager原理分析及应用/">LocalBroadcastManager原理分析及应用</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/15/Java对象创建、内存分配、访问定位概述/">Java对象创建、内存分配、访问定位概述</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/08/Hybrid框架之交互通信篇/">Hybrid框架之交互通信篇</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/09/06/Android应用快捷方式/">Android应用快捷方式</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/15/Android架构组件/">Android架构组件</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/10/业内移动App架构参考/">业内移动App架构参考</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/08/Android全面屏适配/">Android全面屏适配</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/08/07/Android应用架构/">Android应用架构</a></li><li class="post-list-item"><a class="post-list-link" href="/2017/07/13/一种Android分包策略推荐/">一种Android分包策略推荐</a></li></ul></div><div class="widget"><div class="widget-title"><i class="fa fa-comment-o"> 最近评论</i></div><script type="text/javascript" src="//aspook.disqus.com/recent_comments_widget.js?num_items=5&amp;hide_avatars=1&amp;avatar_size=32&amp;excerpt_length=20&amp;hide_mods=1"></script></div><div class="widget"><div class="widget-title"><i class="fa fa-external-link"> 友情链接</i></div><ul></ul><a href="http://blog.csdn.net/ahence" title="aspook" target="_blank">aspook</a></div></div></div><div class="pure-u-1 pure-u-md-3-4"><div id="footer">© <a href="/." rel="nofollow">ASPOOK.</a> Powered by<a rel="nofollow" target="_blank" href="https://hexo.io"> Hexo.</a><a rel="nofollow" target="_blank" href="https://github.com/tufu9441/maupassant-hexo"> Theme</a> by<a rel="nofollow" target="_blank" href="https://github.com/pagecho"> Cho.</a></div></div></div><a id="rocket" href="#top" class="show"></a><script type="text/javascript" src="/js/totop.js?v=0.0.0" async></script><script type="text/javascript" src="//cdn.bootcss.com/fancybox/2.1.5/jquery.fancybox.pack.js" async></script><script type="text/javascript" src="/js/fancybox.js?v=0.0.0" async></script><link rel="stylesheet" type="text/css" href="/css/jquery.fancybox.css?v=0.0.0"><script type="text/javascript" src="/js/codeblock-resizer.js?v=0.0.0"></script><script type="text/javascript" src="/js/smartresize.js?v=0.0.0"></script></div></body></html>
